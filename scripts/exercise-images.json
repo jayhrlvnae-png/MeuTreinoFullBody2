@@ -40,14 +40,6 @@
       "Crunches/0.jpg",
       "Crunches/1.jpg"
     ],
-    "Caminhada leve": [
-      "Walking_Treadmill/0.jpg",
-      "Walking_Treadmill/1.jpg"
-    ],
-    "Remada baixa leve": [
-      "Seated_Cable_Rows/0.jpg",
-      "Seated_Cable_Rows/1.jpg"
-    ],
     "Rosca martelo leve": [
       "Alternate_Hammer_Curl/0.jpg",
       "Alternate_Hammer_Curl/1.jpg"
@@ -84,17 +76,9 @@
       "Reverse_Crunch/0.jpg",
       "Reverse_Crunch/1.jpg"
     ],
-    "Caminhada confortável": [
-      "Walking_Treadmill/0.jpg",
-      "Walking_Treadmill/1.jpg"
-    ],
     "Cadeira extensora": [
       "Leg_Extensions/0.jpg",
       "Leg_Extensions/1.jpg"
-    ],
-    "Remada com halter": [
-      "One-Arm_Dumbbell_Row/0.jpg",
-      "One-Arm_Dumbbell_Row/1.jpg"
     ],
     "Flexora sentada": [
       "Seated_Leg_Curl/0.jpg",
@@ -111,10 +95,6 @@
     "Agachamento no Smith": [
       "Smith_Machine_Squat/0.jpg",
       "Smith_Machine_Squat/1.jpg"
-    ],
-    "Dead bug": [
-      "Dead_Bug/0.jpg",
-      "Dead_Bug/1.jpg"
     ],
     "Crucifixo na polia": [
       "Cable_Crossover/0.jpg",
@@ -151,10 +131,6 @@
     "Ponte unilateral": [
       "Single_Leg_Glute_Bridge/0.jpg",
       "Single_Leg_Glute_Bridge/1.jpg"
-    ],
-    "Caminhada na esteira": [
-      "Walking_Treadmill/0.jpg",
-      "Walking_Treadmill/1.jpg"
     ],
     "Panturrilha no leg press": [
       "Calf_Press_On_The_Leg_Press_Machine/0.jpg",
@@ -195,9 +171,81 @@
     "Supino inclinado na máquina": [
       "Leverage_Incline_Chest_Press/0.jpg",
       "Leverage_Incline_Chest_Press/1.jpg"
+    ],
+    "Elevação curta de pernas estendidas": [
+      "Flat_Bench_Lying_Leg_Raise/0.jpg",
+      "Flat_Bench_Lying_Leg_Raise/1.jpg"
+    ],
+    "Pullover com halter": [
+      "Bent-Arm_Dumbbell_Pullover/0.jpg",
+      "Bent-Arm_Dumbbell_Pullover/1.jpg"
+    ],
+    "Puxada com braços estendidos": [
+      "Straight-Arm_Pulldown/0.jpg",
+      "Straight-Arm_Pulldown/1.jpg"
+    ],
+    "Face pull na polia": [
+      "Face_Pull/0.jpg",
+      "Face_Pull/1.jpg"
+    ],
+    "Elevação frontal com halteres": [
+      "Front_Dumbbell_Raise/0.jpg",
+      "Front_Dumbbell_Raise/1.jpg"
+    ],
+    "Abdominal bicicleta": [
+      "Air_Bike/0.jpg",
+      "Air_Bike/1.jpg"
+    ],
+    "Esteira ou caminhada": [
+      "Walking_Treadmill/0.jpg",
+      "Walking_Treadmill/1.jpg"
+    ],
+    "Supino no chão com halteres": [
+      "Dumbbell_Floor_Press/0.jpg",
+      "Dumbbell_Floor_Press/1.jpg"
+    ],
+    "Subida no degrau": [
+      "Dumbbell_Step_Ups/0.jpg",
+      "Dumbbell_Step_Ups/1.jpg"
+    ],
+    "Flexão inclinada no banco": [
+      "Incline_Push-Up/0.jpg",
+      "Incline_Push-Up/1.jpg"
+    ],
+    "Supino em pé na polia": [
+      "Standing_Cable_Chest_Press/0.jpg",
+      "Standing_Cable_Chest_Press/1.jpg"
+    ],
+    "Sentar e levantar do banco": [
+      "Chair_Squat/0.jpg",
+      "Chair_Squat/1.jpg"
+    ],
+    "Abdominal oblíquo no solo": [
+      "Oblique_Crunches_-_On_The_Floor/0.jpg",
+      "Oblique_Crunches_-_On_The_Floor/1.jpg"
+    ],
+    "Crucifixo inverso com halteres": [
+      "Reverse_Flyes/0.jpg",
+      "Reverse_Flyes/1.jpg"
+    ],
+    "Remada curvada com dois halteres": [
+      "Bent_Over_Two-Dumbbell_Row/0.jpg",
+      "Bent_Over_Two-Dumbbell_Row/1.jpg"
+    ],
+    "Inclinação pélvica em pé": [
+      "Standing_Pelvic_Tilt/0.jpg",
+      "Standing_Pelvic_Tilt/1.jpg"
     ]
   },
   "files": [
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Air_Bike/0.jpg",
+      "Air_Bike/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Air_Bike/1.jpg",
+      "Air_Bike/1.jpg"
+    ],
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Alternate_Hammer_Curl/0.jpg",
       "Alternate_Hammer_Curl/0.jpg"
@@ -213,6 +261,22 @@
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Barbell_Curl/1.jpg",
       "Barbell_Curl/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent-Arm_Dumbbell_Pullover/0.jpg",
+      "Bent-Arm_Dumbbell_Pullover/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent-Arm_Dumbbell_Pullover/1.jpg",
+      "Bent-Arm_Dumbbell_Pullover/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg",
+      "Bent_Over_Two-Dumbbell_Row/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row/1.jpg",
+      "Bent_Over_Two-Dumbbell_Row/1.jpg"
     ],
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Butt_Lift_Bridge/0.jpg",
@@ -279,14 +343,6 @@
       "Crunches/1.jpg"
     ],
     [
-      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dead_Bug/0.jpg",
-      "Dead_Bug/0.jpg"
-    ],
-    [
-      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dead_Bug/1.jpg",
-      "Dead_Bug/1.jpg"
-    ],
-    [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Alternate_Bicep_Curl/0.jpg",
       "Dumbbell_Alternate_Bicep_Curl/0.jpg"
     ],
@@ -311,6 +367,14 @@
       "Dumbbell_Bicep_Curl/1.jpg"
     ],
     [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Floor_Press/0.jpg",
+      "Dumbbell_Floor_Press/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Floor_Press/1.jpg",
+      "Dumbbell_Floor_Press/1.jpg"
+    ],
+    [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Flyes/0.jpg",
       "Dumbbell_Flyes/0.jpg"
     ],
@@ -327,12 +391,52 @@
       "Dumbbell_Shoulder_Press/1.jpg"
     ],
     [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Step_Ups/0.jpg",
+      "Dumbbell_Step_Ups/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dumbbell_Step_Ups/1.jpg",
+      "Dumbbell_Step_Ups/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull/0.jpg",
+      "Face_Pull/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull/1.jpg",
+      "Face_Pull/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Flat_Bench_Lying_Leg_Raise/0.jpg",
+      "Flat_Bench_Lying_Leg_Raise/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Flat_Bench_Lying_Leg_Raise/1.jpg",
+      "Flat_Bench_Lying_Leg_Raise/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Front_Dumbbell_Raise/0.jpg",
+      "Front_Dumbbell_Raise/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Front_Dumbbell_Raise/1.jpg",
+      "Front_Dumbbell_Raise/1.jpg"
+    ],
+    [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Dumbbell_Press/0.jpg",
       "Incline_Dumbbell_Press/0.jpg"
     ],
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Dumbbell_Press/1.jpg",
       "Incline_Dumbbell_Press/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Push-Up/0.jpg",
+      "Incline_Push-Up/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Push-Up/1.jpg",
+      "Incline_Push-Up/1.jpg"
     ],
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Leg_Extensions/0.jpg",
@@ -407,6 +511,14 @@
       "Narrow_Stance_Leg_Press/1.jpg"
     ],
     [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Oblique_Crunches_-_On_The_Floor/0.jpg",
+      "Oblique_Crunches_-_On_The_Floor/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Oblique_Crunches_-_On_The_Floor/1.jpg",
+      "Oblique_Crunches_-_On_The_Floor/1.jpg"
+    ],
+    [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/One-Arm_Dumbbell_Row/0.jpg",
       "One-Arm_Dumbbell_Row/0.jpg"
     ],
@@ -429,6 +541,14 @@
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Reverse_Crunch/1.jpg",
       "Reverse_Crunch/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Reverse_Flyes/0.jpg",
+      "Reverse_Flyes/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Reverse_Flyes/1.jpg",
+      "Reverse_Flyes/1.jpg"
     ],
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Seated_Cable_Rows/0.jpg",
@@ -503,6 +623,14 @@
       "Smith_Machine_Squat/1.jpg"
     ],
     [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Cable_Chest_Press/0.jpg",
+      "Standing_Cable_Chest_Press/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Cable_Chest_Press/1.jpg",
+      "Standing_Cable_Chest_Press/1.jpg"
+    ],
+    [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Calf_Raises/0.jpg",
       "Standing_Calf_Raises/0.jpg"
     ],
@@ -525,6 +653,22 @@
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Leg_Curl/1.jpg",
       "Standing_Leg_Curl/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Pelvic_Tilt/0.jpg",
+      "Standing_Pelvic_Tilt/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Pelvic_Tilt/1.jpg",
+      "Standing_Pelvic_Tilt/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Straight-Arm_Pulldown/0.jpg",
+      "Straight-Arm_Pulldown/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Straight-Arm_Pulldown/1.jpg",
+      "Straight-Arm_Pulldown/1.jpg"
     ],
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Triceps_Pushdown/0.jpg",
