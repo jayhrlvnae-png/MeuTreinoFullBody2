@@ -1,40 +1,171 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b121a"><title>Meu Treino Full Body 2</title><style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#e9f4fa;background:#081019}*{box-sizing:border-box}body{margin:0;max-width:850px;margin-inline:auto;padding:16px 16px 95px}h1{font-size:1.35rem;color:#d7ff4a}h2{font-size:1.12rem}small,.muted{color:#a6b9c7}button,input,textarea,select{font:inherit}button{background:#172737;border:1px solid #365064;color:#e9f4fa;border-radius:12px;padding:12px;cursor:pointer}button.active,.primary{background:#d5ff42;color:#152018;border-color:#d5ff42;font-weight:700}button:disabled{opacity:.4}.card{background:#101e2b;border:1px solid #273d4d;border-radius:17px;padding:15px;margin:12px 0}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row>*{flex:1}.days{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.days button{padding:10px 2px}.tabs{position:fixed;bottom:0;left:0;right:0;background:#081019;border-top:1px solid #29404f;display:flex;justify-content:center;padding:9px;z-index:4}.tabs button{border:0;min-width:65px;padding:11px 6px}input,textarea,select{width:100%;padding:11px;background:#0b1721;color:white;border:1px solid #415565;border-radius:10px}label{display:block;margin:9px 0 5px}textarea{min-height:90px}summary{cursor:pointer;font-weight:700}svg.diagram{width:100%;max-height:150px;background:#182937;border-radius:10px}p{line-height:1.45}.tiny{font-size:.82rem}#clock{font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:center;color:#d5ff42} .hidden{display:none!important}.sets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.sets label{border:1px solid #415565;border-radius:10px;padding:10px 6px;text-align:center;margin:0}.sets input{width:auto;vertical-align:middle;margin-right:3px}.progress{height:8px;background:#29404f;border-radius:20px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;background:#d5ff42}.note{font-size:.8rem;line-height:1.5;color:#b9c7d4}</style><link rel="stylesheet" href="workout.css"></head><body>
-<header><h1>MEU TREINO FULL BODY 2</h1><small>Offline • Treinos de segunda a sexta</small></header><div id="app"></div><nav class="tabs" id="tabs"></nav><script src="exercise-images.js"></script><script src="workout-timers.js"></script><script>
-const key='meutreinofullbody2_v1', old=JSON.parse(localStorage.getItem(key)||'{}');let db={cycle:1,start:today(),logs:[],diary:[],cardio:[],swaps:{},entries:{},completed:{},...old};function save(){localStorage.setItem(key,JSON.stringify(db))}function today(){return new Date().toISOString().slice(0,10)}const expandedExercises = new Set();let tab='treino',day=Math.min(4,Math.max(0,(new Date().getDay()+6)%7));let timer=null,seconds=0,running=false,lastTick=0;
+<header><h1>MEU TREINO FULL BODY 2</h1><small>Offline • Treinos de segunda a sexta</small></header><div id="app"></div><nav class="tabs" id="tabs"></nav><script src="exercise-images.js"></script><script src="workout-timers.js"></script><script src="progression.js"></script><script>
+const key='meutreinofullbody2_v1', old=JSON.parse(localStorage.getItem(key)||'{}');let db={cycle:1,start:today(),logs:[],diary:[],cardio:[],swaps:{},entries:{},completed:{},...old};function save(){localStorage.setItem(key,JSON.stringify(db))}function today(){const now=new Date();return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10)}const expandedExercises = new Set();let tab='treino',day=Math.min(4,Math.max(0,(new Date().getDay()+6)%7));let timer=null,seconds=0,running=false,lastTick=0;
 const plans=[
-{title:'A — Peito, costas e braços',items:[['Supino reto','Peito',3,'8–12',90,'supino'],['Remada sentada','Costas',3,'10–12',90,'remada'],['Agachamento com peso corporal','Quadríceps',2,'10–12',90,'agachamento'],['Crucifixo na máquina','Peito',2,'10–12',60,'crucifixo'],['Rosca alternada','Bíceps',3,'10–12',60,'rosca'],['Prancha','Abdômen',2,'20–30 s',60,'prancha']]},
+{title:'A — Peito, costas e braços',items:[['Supino reto na máquina','Peito',3,'8–12',90,'supino','supino-reto-maquina'],['Remada sentada','Costas',3,'10–12',90,'remada'],['Agachamento na V-Squat (de frente)','Quadríceps',2,'10–12',90,'agachamento','maquina-ombros'],['Crucifixo na máquina','Peito',2,'10–12',60,'crucifixo'],['Rosca alternada','Bíceps',3,'10–12',60,'rosca'],['Prancha','Abdômen',2,'20–30 s',60,'prancha']]},
 {title:'B — Ombros, posterior e panturrilha',items:[['Desenvolvimento sentado','Ombros',3,'8–12',90,'desenvolvimento'],['Puxada frontal','Costas',3,'10–12',90,'puxada'],['Mesa flexora','Posterior da coxa',2,'10–12',75,'flexora'],['Panturrilha em pé','Panturrilha',3,'12–15',60,'panturrilha'],['Tríceps na polia','Tríceps',3,'10–12',60,'triceps'],['Abdominal curto','Abdômen',2,'12–15',60,'abdominal']]},
-{title:'C — Recuperação e técnica',items:[['Caminhada leve','Condicionamento',1,'10–15 min',30,'caminhada'],['Remada baixa leve','Costas',2,'12',60,'remada'],['Flexão na parede','Peito',2,'10–12',60,'flexao'],['Rosca martelo leve','Bíceps',2,'12',60,'rosca'],['Ponte de glúteos','Glúteos',2,'12',60,'ponte'],['Bird dog','Core',2,'8 cada lado',60,'birddog']]},
-{title:'D — Peito, costas e braços',items:[['Supino inclinado','Peito',3,'8–12',90,'supino'],['Puxada frontal','Costas',3,'10–12',90,'puxada'],['Peck deck','Peito',2,'12',60,'crucifixo'],['Remada unilateral','Costas',2,'10 cada',75,'remada'],['Rosca direta','Bíceps',3,'10–12',60,'rosca'],['Tríceps corda','Tríceps',3,'10–12',60,'triceps']]},
-{title:'E — Corpo inteiro e condicionamento',items:[['Leg press leve','Pernas',2,'10–12',90,'legpress'],['Panturrilha sentada','Panturrilha',3,'12–15',60,'panturrilha'],['Supino máquina','Peito',2,'10–12',75,'supino'],['Remada máquina','Costas',2,'10–12',75,'remada'],['Elevação lateral','Ombros',2,'12–15',60,'lateral'],['Abdominal reverso','Abdômen',2,'12',60,'abdominal'],['Caminhada confortável','Condicionamento',1,'10 min',30,'caminhada']]}
-];plans[0].items.push(['Cadeira extensora','Quadríceps',2,'12',75,'agachamento']);plans[1].items.push(['Elevação lateral','Ombros',2,'12',60,'lateral']);plans[2].items.push(['Panturrilha em pé','Panturrilha',2,'15',60,'panturrilha']);plans[3].items.push(['Prancha','Core',2,'20–30 s',60,'prancha']);const alternatives={'Supino reto':'Supino máquina','Remada sentada':'Remada com halter','Agachamento com peso corporal':'Sentar e levantar de banco','Mesa flexora':'Flexora sentada','Puxada frontal':'Remada com elástico','Leg press leve':'Agachamento no banco','Tríceps na polia':'Tríceps com elástico','Panturrilha sentada':'Panturrilha em pé','Crucifixo na máquina':'Crucifixo com halteres'};
-const instructions={supino:'Deitado ou sentado, mantenha os ombros estáveis, empurre à frente e retorne devagar.',remada:'Puxe os cotovelos para trás com tronco estável; retorne de modo controlado.',agachamento:'Flexione quadris e joelhos até uma amplitude confortável, mantendo os pés apoiados.',crucifixo:'Aproxime os braços à frente do peito sem forçar a articulação do ombro.',rosca:'Flexione os cotovelos sem balançar o tronco; retorne lentamente.',prancha:'Mantenha o tronco alinhado e respire normalmente.',desenvolvimento:'Empurre os pesos para cima sem arquear a lombar.',puxada:'Puxe a barra à frente do peito, aproximando as escápulas.',flexora:'Flexione os joelhos contra resistência com movimento controlado.',panturrilha:'Eleve os calcanhares e desça lentamente sem quicar.',triceps:'Estenda os cotovelos mantendo os braços próximos ao tronco.',abdominal:'Contraia o abdômen sem puxar o pescoço.',caminhada:'Caminhe em ritmo confortável e mantenha-se hidratado.',flexao:'Apoie as mãos na parede e flexione os cotovelos com o tronco alinhado.',ponte:'Deitado, eleve o quadril suavemente e retorne.',birddog:'Em quatro apoios, estenda braço e perna opostos com controle.',legpress:'Empurre a plataforma sem travar os joelhos; use amplitude confortável.',lateral:'Eleve os braços lateralmente até altura confortável, sem impulso.'};
+{title:'C — Recuperação e técnica',items:[['Caminhada leve','Condicionamento',1,'10–15 min',30,'caminhada'],['Remada baixa leve','Costas',2,'12',60,'remada'],['Supino inclinado na máquina','Peito',2,'10–12',60,'supino','supino-inclinado-maquina'],['Rosca martelo leve','Bíceps',2,'12',60,'rosca'],['Ponte de glúteos','Glúteos',2,'12',60,'ponte'],['Dead bug','Core',2,'8 cada lado',60,'deadbug','dead-bug']]},
+{title:'D — Peito, costas e braços',items:[['Supino inclinado na máquina','Peito',3,'8–12',90,'supino','supino-inclinado-maquina'],['Puxada frontal','Costas',3,'10–12',90,'puxada'],['Crucifixo na polia','Peito',2,'12',60,'crucifixo','crucifixo-polia'],['Remada unilateral','Costas',2,'10 cada',75,'remada'],['Rosca direta','Bíceps',3,'10–12',60,'rosca'],['Tríceps corda','Tríceps',3,'10–12',60,'triceps']]},
+{title:'E — Corpo inteiro e condicionamento',items:[['Leg press leve','Pernas',2,'10–12',90,'legpress'],['Panturrilha em pé','Panturrilha',3,'12–15',60,'panturrilha','panturrilha-em-pe'],['Supino reto na máquina','Peito',2,'10–12',75,'supino'],['Remada máquina','Costas',2,'10–12',75,'remada'],['Elevação lateral','Ombros',2,'12–15',60,'lateral'],['Abdominal reverso','Abdômen',2,'12',60,'abdominal'],['Caminhada confortável','Condicionamento',1,'10 min',30,'caminhada']]}
+];plans[0].items.push(['Cadeira extensora','Quadríceps',2,'12',75,'agachamento']);plans[1].items.push(['Elevação lateral','Ombros',2,'12',60,'lateral']);plans[2].items.push(['Panturrilha em pé','Panturrilha',2,'15',60,'panturrilha']);plans[3].items.push(['Prancha','Core',2,'20–30 s',60,'prancha']);plans[4].items.push(['Cadeira abdutora','Quadril',2,'12',60,'abdutora','cadeira-quadril',true]);
+const alternatives={
+  "Remada sentada": [
+    "Remada com halter",
+    "Remada máquina"
+  ],
+  "Agachamento na V-Squat (de frente)": [
+    "Agachamento no Smith"
+  ],
+  "Crucifixo na máquina": [
+    "Crucifixo com halteres",
+    "Crucifixo na polia"
+  ],
+  "Rosca alternada": [
+    "Rosca direta com halteres"
+  ],
+  "Prancha": [
+    "Dead bug"
+  ],
+  "Cadeira extensora": [
+    "Extensora unilateral"
+  ],
+  "Desenvolvimento sentado": [
+    "Desenvolvimento na máquina"
+  ],
+  "Puxada frontal": [
+    "Puxada frontal pegada fechada"
+  ],
+  "Mesa flexora": [
+    "Flexora sentada",
+    "Flexora em pé"
+  ],
+  "Panturrilha em pé": [
+    "Panturrilha em pé com halteres",
+    "Panturrilha no leg press"
+  ],
+  "Tríceps na polia": [
+    "Tríceps testa com halteres"
+  ],
+  "Abdominal curto": [
+    "Abdominal reverso"
+  ],
+  "Elevação lateral": [
+    "Elevação lateral sentada"
+  ],
+  "Caminhada leve": [
+    "Caminhada na esteira"
+  ],
+  "Caminhada confortável": [
+    "Caminhada na esteira"
+  ],
+  "Remada baixa leve": [
+    "Remada máquina",
+    "Remada com halter"
+  ],
+  "Rosca martelo leve": [
+    "Rosca martelo cruzada"
+  ],
+  "Ponte de glúteos": [
+    "Ponte unilateral"
+  ],
+  "Dead bug": [
+    "Prancha"
+  ],
+  "Crucifixo na polia": [
+    "Crucifixo unilateral na polia"
+  ],
+  "Remada unilateral": [
+    "Remada na polia unilateral"
+  ],
+  "Rosca direta": [
+    "Rosca direta com halteres"
+  ],
+  "Tríceps corda": [
+    "Tríceps na polia",
+    "Tríceps testa com halteres"
+  ],
+  "Leg press leve": [
+    "Leg press unilateral",
+    "Leg press pés próximos",
+    "Agachamento no banco"
+  ],
+  "Remada máquina": [
+    "Remada sentada"
+  ],
+  "Abdominal reverso": [
+    "Abdominal curto"
+  ],
+  "Supino reto na máquina": [
+    "Supino com halteres"
+  ],
+  "Supino inclinado na máquina": [
+    "Supino inclinado com halteres"
+  ],
+  "Cadeira abdutora": [
+    "Cadeira adutora"
+  ]
+};
+const instructions={abdutora:'Use o ajuste de abertura das pernas na cadeira conjugada.',supino:'Deitado ou sentado, mantenha os ombros estáveis, empurre à frente e retorne devagar.',remada:'Puxe os cotovelos para trás com tronco estável; retorne de modo controlado.',agachamento:'Flexione quadris e joelhos até uma amplitude confortável, mantendo os pés apoiados.',crucifixo:'Aproxime os braços à frente do peito sem forçar a articulação do ombro.',rosca:'Flexione os cotovelos sem balançar o tronco; retorne lentamente.',prancha:'Mantenha o tronco alinhado e respire normalmente.',desenvolvimento:'Empurre os pesos para cima sem arquear a lombar.',puxada:'Puxe a barra à frente do peito, aproximando as escápulas.',flexora:'Flexione os joelhos contra resistência com movimento controlado.',panturrilha:'Eleve os calcanhares e desça lentamente sem quicar.',triceps:'Estenda os cotovelos mantendo os braços próximos ao tronco.',abdominal:'Contraia o abdômen sem puxar o pescoço.',caminhada:'Caminhe em ritmo confortável e mantenha-se hidratado.',flexao:'Apoie as mãos na parede e flexione os cotovelos com o tronco alinhado.',ponte:'Deitado, eleve o quadril suavemente e retorne.',deadbug:'Deite de costas e mova braço e perna opostos com controle, mantendo a lombar estável.',legpress:'Empurre a plataforma sem travar os joelhos; use amplitude confortável.',lateral:'Eleve os braços lateralmente até altura confortável, sem impulso.'};
 function exercisePictures(photos, name) {
-    return photos.length ? `<div class="exercise-photos">${photos.map((path,i)=>`<figure><img loading="lazy" src="images/${path}" alt="${esc(name)}${photos.length>1?' — '+(i?'fim do movimento':'posição inicial'):''}">${photos.length>1?`<figcaption>${i?'Fim do movimento':'Posição inicial'}</figcaption>`:''}</figure>`).join('')}</div>` : '<p class="muted tiny">Imagem indisponível para esta alternativa.</p>';
+    return photos.length ? `<div class="exercise-photos">${photos.map((path,i)=>`<figure><img loading="lazy" src="images/${path}" alt="${esc(name)}${photos.length>1?' — '+(i?'fim do movimento':'posição inicial'):''}">${photos.length>1?`<figcaption>${i?'Fim do movimento':'Posição inicial'}</figcaption>`:''}</figure>`).join('')}</div>` : '';
 }
-function weekNo(){return Math.min(8,Math.max(1,Math.floor((Date.now()-new Date(db.start).getTime())/604800000)+1))}
-function entryKey(i){return db.cycle+":"+weekNo()+":"+day+":"+i}
+function cycleWeeksElapsed(){
+    return Math.max(0, Math.floor((Date.parse(today())-Date.parse(db.start))/604800000));
+}
+function weekNo(){return Math.min(8,cycleWeeksElapsed()+1)}
+function renewalHTML(){
+    return cycleWeeksElapsed()>=8 ? `<section class="card renewal"><p>As oito semanas deste ciclo terminaram.</p><button class="primary" onclick="newCycle()">Iniciar novo ciclo</button></section>` : '';
+}
+function slotKey(i){
+    const revision=plans[day].items[i][6];
+    return revision ? day+'-'+i+'-'+revision : day+'-'+i;
+}
+function selectedExercise(i){
+    const original=plans[day].items[i][0], alternative=db.swaps[slotKey(i)];
+    return alternatives[original]?.includes(alternative) ? alternative : original;
+}
+function entryKey(i){
+    const item=plans[day].items[i], name=selectedExercise(i);
+    const base=[db.cycle,weekNo(),day,i].join(':');
+    if (name!==item[0]) return base+':'+encodeURIComponent(name);
+    return item[6] ? base+':'+item[6] : base;
+}
 function completedSetCount(i){return (db.completed[entryKey(i)]||[]).filter(Boolean).length}
-function getProgress(){let t=plans[day].items.reduce((n,e)=>n+e[2],0),done=plans[day].items.reduce((n,e,i)=>n+completedSetCount(i),0);return {t,done}}
-function markSet(i,s,checked){let k=entryKey(i),arr=db.completed[k]||[];arr[s]=checked;db.completed[k]=arr;save();let el=document.getElementById('sc'+i);if(el)el.textContent=completedSetCount(i)+'/'+plans[day].items[i][2]+' séries';let p=getProgress(),out=document.getElementById('setsProgress');if(out)out.textContent=p.done+'/'+p.t+' séries marcadas';let b=document.getElementById('progressBar');if(b)b.style.width=(p.t?100*p.done/p.t:0)+'%'}
+function getProgress(){
+    return plans[day].items.reduce((progress,item,index)=>{
+        if (!item[7]) {
+            progress.t+=item[2];
+            progress.done+=completedSetCount(index);
+        }
+        return progress;
+    },{t:0,done:0});
+}
+function markSet(i,s,checked){let k=entryKey(i),arr=db.completed[k]||[];arr[s]=checked;db.completed[k]=arr;save();let el=document.getElementById('sc'+i);if(el)el.textContent=completedSetCount(i)+'/'+plans[day].items[i][2]+' séries marcadas';let p=getProgress(),out=document.getElementById('setsProgress');if(out)out.textContent=p.done+'/'+p.t+' séries marcadas';let b=document.getElementById('progressBar');if(b)b.style.width=(p.t?100*p.done/p.t:0)+'%'}
 function setEntry(i,which,value){let k=entryKey(i);db.entries[k]=Object.assign({},db.entries[k]||{},{[which]:value});save()}
-function render(){document.getElementById('tabs').innerHTML=[['treino','Treino'],['diario','Diário'],['cardio','Cardio'],['historico','Histórico']].map(([k,v])=>`<button class="${tab===k?'active':''}" onclick="tab='${k}';render()">${v}</button>`).join('');let a=document.getElementById('app');if(tab==='treino'){let p=plans[day],progress=getProgress();a.innerHTML=`<section class="card"><b>Calendário semanal</b><p class="muted tiny">Ciclo ${db.cycle} • Semana ${weekNo()}/8</p><div class="days">${['Seg A','Ter B','Qua C','Qui D','Sex E'].map((x,i)=>`<button class="${i===day?'active':''}" onclick="day=${i};render()"><strong>${x.slice(-1)}</strong><span>${x.slice(0,3)}</span></button>`).join('')}</div></section><section class="card overview"><h2>Treino ${p.title}</h2><small>45–60 min</small><div class="progress"><span id="progressBar" style="width:${progress.t?100*progress.done/progress.t:0}%"></span></div><small id="setsProgress">${progress.done}/${progress.t} séries marcadas</small></section><p class="muted tiny">Carga leve a moderada, sem esforço máximo. Interrompa se houver tontura, tremores, suor frio, dor intensa ou formigamento. Se usa medicamentos para diabetes, acompanhe a glicemia conforme orientação profissional.</p>${p.items.map((e,i)=>exercise(e,i)).join('')}<button class="primary" style="width:100%" onclick="finish()">Concluir treino e salvar</button><details class="card"><summary>Créditos das imagens</summary><p class="tiny">Fotos de exercícios: Free Exercise DB (domínio público, Unlicense). Flexão na parede: CDC, via Wikimedia Commons (domínio público). Bird dog: Pk0001, Wikimedia Commons, CC BY-SA 4.0. Arquivos da Wikimedia sem alterações.</p></details>`;}
+function render(){document.getElementById('tabs').innerHTML=[['treino','Treino'],['diario','Diário'],['cardio','Cardio'],['historico','Histórico']].map(([k,v])=>`<button class="${tab===k?'active':''}" onclick="tab='${k}';render()">${v}</button>`).join('');let a=document.getElementById('app');if(tab==='treino'){let p=plans[day],progress=getProgress();a.innerHTML=`<section class="card"><b>Calendário semanal</b><p class="muted tiny">Ciclo ${db.cycle} • Semana ${weekNo()}/8</p><div class="days">${['Seg A','Ter B','Qua C','Qui D','Sex E'].map((x,i)=>`<button class="${i===day?'active':''}" onclick="day=${i};render()"><strong>${x.slice(-1)}</strong><span>${x.slice(0,3)}</span></button>`).join('')}</div></section>${renewalHTML()}<section class="card overview"><h2>Treino ${p.title}</h2><small>Objetivo: emagrecimento e definição • 45–60 min</small><div class="progress"><span id="progressBar" style="width:${progress.t?100*progress.done/progress.t:0}%"></span></div><small id="setsProgress">${progress.done}/${progress.t} séries marcadas</small></section><p class="muted tiny">Carga leve a moderada, sem esforço máximo. Interrompa se houver tontura, tremores, suor frio, dor intensa ou formigamento. Se usa medicamentos para diabetes, acompanhe a glicemia conforme orientação profissional.</p>${p.items.map((e,i)=>exercise(e,i)).join('')}<button class="primary" style="width:100%" onclick="finish()">Concluir treino e salvar</button><details class="card"><summary>Créditos das imagens</summary><p class="tiny">Fotos de exercícios: Free Exercise DB (domínio público, Unlicense). </p></details>`;}
 else if(tab==='diario')a.innerHTML=`<h2>Diário de treino e recuperação</h2><section class="card"><label>Treino</label><select id="dw">${plans.map((_,i)=>`<option value="${i}">${'ABCDE'[i]}</option>`)}</select><label>Como me senti?</label><textarea id="note" placeholder="Ex.: dor nas coxas, cansaço maior, formigamento..."></textarea><label>Região dolorida</label><input id="region" placeholder="Ex.: coxas"><label>Dor (0 a 10)</label><input type="number" min="0" max="10" id="pain" value="0"><label>Cansaço (0 a 10)</label><input type="number" min="0" max="10" id="fatigue" value="0"><label><input type="checkbox" id="tingle" style="width:auto"> Formigamento</label><button class="primary" onclick="addDiary()">Salvar anotação</button></section>${db.diary.map(x=>`<div class="card"><b>${x.date} • Treino ${x.workout}</b><p>${esc(x.note)}</p><small>Região: ${esc(x.region)} • Dor ${x.pain}/10 • Cansaço ${x.fatigue}/10 ${x.tingle?'• Formigamento':''}</small></div>`).join('')}`;
 else if(tab==='cardio')a.innerHTML=`<h2>Caminhada e corrida</h2><section class="card"><label>Atividade</label><select id="activity"><option>Caminhada</option><option>Esteira</option><option>Corrida</option></select><div id="clock">${fmt(seconds)}</div><div class="row"><button onclick="startClock('Cardio')">Iniciar / Retomar</button><button onclick="pauseClock()">Pausar</button><button onclick="resetClock()">Zerar</button></div><label>Distância (km, preenchimento manual)</label><input id="distance" type="number" min="0" step="0.01" placeholder="Ex.: 2.5"><button class="primary" onclick="addCardio()">Salvar atividade</button><small>Distância automática por GPS não está disponível nesta versão.</small></section>${db.cardio.map(x=>`<div class="card">${x.date} • ${esc(x.kind)} • ${x.time} • ${x.km} km</div>`).join('')}`;
-else a.innerHTML=`<h2>Histórico e ciclos</h2><section class="card"><b>Ciclo ${db.cycle}</b><p>Início: ${db.start}</p><p>${db.logs.filter(x=>x.cycle===db.cycle).length} treinos concluídos neste ciclo.</p><button onclick="newCycle()">Encerrar ciclo e iniciar semana 1</button><small>O reinício não apaga os resultados anteriores. Confirme apenas depois de completar as oito semanas.</small></section>${db.logs.map(x=>`<div class="card"><b>${x.date} • Ciclo ${x.cycle} • Semana ${x.week||"-"} • Treino ${x.workout}</b><p>${x.done??"-"}/${x.total??"-"} séries concluídas</p><p>${x.items.map(y=>`${esc(y.name)}: ${y.sets} séries, ${y.reps} reps, ${y.kg} kg`).join('<br>')}</p></div>`).join('')}`;
+else a.innerHTML=`<h2>Histórico e ciclos</h2>${renewalHTML()}<section class="card"><b>Ciclo ${db.cycle}</b><p>Início: ${db.start}</p><p>${db.logs.filter(x=>x.cycle===db.cycle).length} treinos concluídos neste ciclo.</p><button onclick="newCycle()">Encerrar ciclo e iniciar semana 1</button><small>O reinício não apaga os resultados anteriores. Confirme apenas depois de completar as oito semanas.</small></section>${progressionHTML()}${db.logs.map(x=>`<div class="card"><b>${x.date} • Ciclo ${x.cycle} • Semana ${x.week||"-"} • Treino ${x.workout}</b><p>${x.done??"-"}/${x.total??"-"} séries concluídas</p><p>${x.items.map(y=>`${esc(y.name)}: ${y.sets} séries, ${y.reps} reps, ${y.kg} kg`).join('<br>')}</p></div>`).join('')}`;
 }
-function exercise(e,i){let id=`${day}-${i}`, name=db.swaps[id]||e[0],swap=alternatives[e[0]],k=entryKey(i),values=db.entries[k]||{},checked=db.completed[k]||[],photos=exerciseImages[name]||[],clockId=k.replaceAll(':','-');
+function exerciseTarget(item,name) {
+    if (name===item[0]) return item[3];
+    if (name==='Prancha') return '20–30 s';
+    if (name==='Leg press unilateral') return '10–12 por perna';
+    if (name==='Dead bug') return '8 cada lado';
+    return item[3];
+}
+function exercise(e,i){let id=slotKey(i), name=selectedExercise(i),target=exerciseTarget(e,name),swap=alternatives[e[0]]||[],k=entryKey(i),values=db.entries[k]||{},checked=db.completed[k]||[],photos=exerciseImages[name]||[],clockId=k.replaceAll(':','-');
     return `<details class="card exercise-card" ${expandedExercises.has(id)?'open':''} ontoggle="this.open?expandedExercises.add('${id}'):expandedExercises.delete('${id}')"><summary>
-    ${photos.length?`<img class="exercise-thumb" loading="lazy" src="images/${photos[0]}" alt="">`:'<span class="exercise-thumb no-thumb">Sem foto</span>'}
-    <span><span class="exercise-group">${e[1]}</span><b>${i+1}. ${esc(name)}</b><small class="exercise-meta">${e[2]} séries × ${e[3]} · ${e[4]} s de descanso</small><small id="sc${i}" class="exercise-meta">${completedSetCount(i)}/${e[2]} séries marcadas</small></span>
-    </summary><div class="exercise-clocks">${exerciseClockHTML(clockId,'execution',executionDuration(e[3]))}${exerciseClockHTML(clockId,'rest',e[4])}</div>
-    ${exercisePictures(photos,name)}<p class="tiny">${name===e[0]?(name==='Cadeira extensora'?'Sentado, estenda os joelhos com controle e baixe o apoio devagar.':instructions[e[5]]||'Execute de forma lenta, controlada e sem dor.'):'Use uma carga e uma amplitude confortáveis para esta alternativa.'}</p>${swap?`<button onclick="swapExercise('${id}','${encodeURIComponent(swap)}')">${db.swaps[id]?'Voltar ao original':'Substituir por '+esc(swap)}</button>`:''}<div class="sets">${Array.from({length:e[2]},(_,s)=>`<label><input type="checkbox" ${checked[s]?'checked':''} onchange="markSet(${i},${s},this.checked)">Série ${s+1}</label>`).join('')}</div><div class="row"><label>Séries<input id="s${i}" type="number" min="0" value="${esc(values.sets??e[2])}" oninput="setEntry(${i},'sets',this.value)"></label><label>${/ (?:s|min)$/.test(e[3])?'Tempo':'Reps'}<input id="r${i}" type="number" min="0" value="${esc(values.reps??parseInt(e[3])??10)}" oninput="setEntry(${i},'reps',this.value)"></label><label>Kg<input id="k${i}" type="number" min="0" step="0.5" value="${esc(values.kg??0)}" oninput="setEntry(${i},'kg',this.value)"></label></div></details>`}
+    ${photos.length?`<img class="exercise-thumb" loading="lazy" src="images/${photos[0]}" alt="">`:'<span class="exercise-thumb no-thumb">Máquina<br>da academia</span>'}
+    <span><span class="exercise-group">${e[1]}</span><b>${i+1}. ${esc(name)}</b>${e[7]?'<small class="exercise-meta">Opcional</small>':''}<small class="exercise-meta">${e[2]} séries × ${target} · ${e[4]} s de descanso</small><small id="sc${i}" class="exercise-meta">${completedSetCount(i)}/${e[2]} séries marcadas</small></span>
+    </summary><div class="exercise-clocks">${exerciseClockHTML(clockId,'execution',executionDuration(target))}${exerciseClockHTML(clockId,'rest',e[4])}</div>
+    ${exercisePictures(photos,name)}<p class="tiny">${name===e[0]?(name==='Agachamento na V-Squat (de frente)'?'Confirme o ajuste e as travas do aparelho com o instrutor da academia.':name==='Cadeira extensora'?'Sentado, estenda os joelhos com controle e baixe o apoio devagar.':instructions[e[5]]||'Execute de forma lenta, controlada e sem dor.'):name==='Cadeira adutora'?'Use o ajuste de fechamento das pernas na cadeira conjugada.':'Use uma carga e uma amplitude confortáveis para esta alternativa.'}</p>${swap.length?`<label for="swap-${id}">Alternativas deste exercício</label><select id="swap-${id}" onchange="swapExercise('${id}',this.value)"><option value="">${esc(e[0])} (principal)</option>${swap.map(option=>`<option value="${esc(option)}" ${option===name?'selected':''}>${esc(option)}</option>`).join('')}</select>`:''}${e[0]==='Crucifixo na polia'?'<p class="tiny muted">Use a estação de polia do tríceps corda. Se tiver uma única polia, escolha a versão unilateral.</p>':''}<p><button type="button" class="exercise-history" onclick="showExerciseProgress(${i})">Ver evolução</button></p><div class="sets">${Array.from({length:e[2]},(_,s)=>`<label><input type="checkbox" ${checked[s]?'checked':''} onchange="markSet(${i},${s},this.checked)">Série ${s+1}</label>`).join('')}</div><div class="row"><label>Séries<input id="s${i}" type="number" min="0" value="${esc(values.sets??e[2])}" oninput="setEntry(${i},'sets',this.value)"></label><label>${/ (?:s|min)$/.test(target)?'Tempo':'Reps'}<input id="r${i}" type="number" min="0" value="${esc(values.reps??parseInt(target)??10)}" oninput="setEntry(${i},'reps',this.value)"></label><label>Kg<input id="k${i}" type="number" min="0" step="0.5" value="${esc(values.kg??0)}" oninput="setEntry(${i},'kg',this.value)"></label></div></details>`}
 function fmt(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function updateClock(){const clock=document.getElementById('clock');if(clock)clock.textContent=fmt(seconds)}
 function startClock(){if(running)return;running=true;lastTick=Date.now();timer=setInterval(()=>{const elapsed=Math.floor((Date.now()-lastTick)/1000);if(elapsed>0){seconds+=elapsed;lastTick+=elapsed*1000;updateClock()}},250)}
 function pauseClock(){running=false;clearInterval(timer)}
 function resetClock(){pauseClock();seconds=0;updateClock()}
-function swapExercise(id,v){if(db.swaps[id])delete db.swaps[id];else db.swaps[id]=decodeURIComponent(v);save();render()}function finish(){let p=plans[day],progress=getProgress();if(progress.done===0&&!confirm('Nenhuma série foi marcada como concluída. Deseja salvar mesmo assim?'))return;db.logs.unshift({date:new Date().toLocaleString('pt-BR'),cycle:db.cycle,week:weekNo(),workout:'ABCDE'[day],done:progress.done,total:progress.t,items:p.items.map((e,i)=>{let v=db.entries[entryKey(i)]||{};return {name:db.swaps[`${day}-${i}`]||e[0],sets:v.sets??e[2],reps:v.reps??e[3],kg:v.kg??0,completed:completedSetCount(i)}})});save();alert('Treino salvo no aparelho.');tab='historico';render()}
-function addDiary(){db.diary.unshift({date:new Date().toLocaleString('pt-BR'),workout:'ABCDE'[+document.getElementById('dw').value],note:document.getElementById('note').value,region:document.getElementById('region').value,pain:document.getElementById('pain').value,fatigue:document.getElementById('fatigue').value,tingle:document.getElementById('tingle').checked});save();render()}function addCardio(){db.cardio.unshift({date:new Date().toLocaleString('pt-BR'),kind:document.getElementById('activity').value,time:fmt(seconds),km:document.getElementById('distance').value||0});save();pauseClock();seconds=0;render()}function newCycle(){let weeks=(Date.now()-new Date(db.start).getTime())/604800000;if(weeks<8&&!confirm('Ainda não se passaram 8 semanas. Deseja mesmo iniciar um novo ciclo mantendo todos os registros?'))return;if(!confirm('Iniciar novo ciclo? Os resultados anteriores serão preservados.'))return;db.cycle++;db.start=today();save();render()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}render();
+function swapExercise(id,value){if(value)db.swaps[id]=value;else delete db.swaps[id];save();render()}function finish(){let p=plans[day],progress=getProgress();if(!p.items.some((_,index)=>completedSetCount(index)>0)&&!confirm('Nenhuma série foi marcada como concluída. Deseja salvar mesmo assim?'))return;db.logs.unshift({date:new Date().toLocaleString('pt-BR'),loggedAt:Date.now(),cycle:db.cycle,week:weekNo(),workout:'ABCDE'[day],done:progress.done,total:progress.t,items:p.items.map((e,i)=>{let v=db.entries[entryKey(i)]||{};return {name:selectedExercise(i),sets:v.sets??e[2],reps:v.reps??exerciseTarget(e,selectedExercise(i)),kg:v.kg??0,completed:completedSetCount(i)}}).filter((item,index)=>!p.items[index][7]||item.completed>0)});save();alert('Treino salvo no aparelho.');tab='historico';render()}
+function addDiary(){db.diary.unshift({date:new Date().toLocaleString('pt-BR'),workout:'ABCDE'[+document.getElementById('dw').value],note:document.getElementById('note').value,region:document.getElementById('region').value,pain:document.getElementById('pain').value,fatigue:document.getElementById('fatigue').value,tingle:document.getElementById('tingle').checked});save();render()}function addCardio(){db.cardio.unshift({date:new Date().toLocaleString('pt-BR'),kind:document.getElementById('activity').value,time:fmt(seconds),km:document.getElementById('distance').value||0});save();pauseClock();seconds=0;render()}function newCycle(){if(cycleWeeksElapsed()<8&&!confirm('Ainda não se passaram 8 semanas. Deseja mesmo iniciar um novo ciclo mantendo todos os registros?'))return;if(!confirm('Iniciar novo ciclo? Os resultados anteriores serão preservados.'))return;db.cycle++;db.start=today();save();render()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}render();
 </script></body></html>

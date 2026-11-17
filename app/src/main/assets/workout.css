@@ -56,3 +56,12 @@ button.active, .primary {background: var(--lime); border-color: var(--lime); col
   .exercise-card summary {grid-template-columns: 104px minmax(0,1fr) auto}
   .exercise-thumb {width: 104px; height: 82px}
 }
+.renewal p {margin: 0 0 8px}
+.exercise-history {width: 100%}
+#load-progress {scroll-margin-top: 14px}
+#load-progress h3 {font-size: .94rem; margin-bottom: 8px}
+.load-chart {padding: 0; list-style: none; margin: 0}
+.load-chart li {margin: 10px 0}
+.load-meter {position: relative; isolation: isolate; overflow: hidden; background: var(--background); border-radius: 8px; padding: 6px 9px}
+.load-bar {position: absolute; z-index: -1; inset: 0 auto 0 0; background: #295045}
+.load-meter strong {font-variant-numeric: tabular-nums}
