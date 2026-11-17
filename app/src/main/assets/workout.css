@@ -1,0 +1,58 @@
+:root {
+  --background: #0a0d12;
+  --card: #161d28;
+  --raised: #1e2736;
+  --border: #2b3648;
+  --lime: #c6ff3d;
+  --teal: #2ee6a6;
+  --muted: #a7b3c6;
+  color: #f4f6f9;
+  background: var(--background);
+  color-scheme: dark;
+}
+body {padding: 18px 14px 93px}
+header {margin-bottom: 20px}
+h1 {margin: 0 0 5px; color: var(--lime); font-size: clamp(1.3rem, 5vw, 2rem); letter-spacing: -.04em}
+small, .muted {color: var(--muted)}
+.card {background: var(--card); border-color: var(--border); border-radius: 19px; padding: 14px}
+button {background: var(--raised); border-color: var(--border); min-height: 42px}
+button.active, .primary {background: var(--lime); border-color: var(--lime); color: var(--background)}
+.tabs {background: var(--background); border-color: var(--border); gap: 5px}
+.tabs button {flex: 1; max-width: 150px}
+.days button {min-width: 0; padding: 7px 2px}
+.days strong, .days span {display: block}
+.days span {font-size: .72rem}
+.overview {background: linear-gradient(135deg, var(--raised), var(--card))}
+.overview h2 {margin: 0 0 6px; font-size: 1.24rem}
+.progress span {background: var(--teal)}
+.exercise-card[open] {border-color: #465471}
+.exercise-card summary {display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; align-items: center; gap: 11px; list-style: none; min-height: 70px}
+.exercise-card summary::-webkit-details-marker {display: none}
+.exercise-card summary::after {content: '⌄'; color: var(--lime); font-size: 1.25rem}
+.exercise-card[open] summary::after {transform: rotate(180deg)}
+.exercise-card summary b, .exercise-card summary small {display: block}
+.exercise-card summary b {margin: 4px 0; line-height: 1.2}
+.exercise-thumb {width: 84px; height: 70px; object-fit: contain; background: #fff; border-radius: 11px}
+.no-thumb {background: var(--raised); display: grid; place-items: center; color: var(--muted); text-align: center; font-size: .68rem}
+.exercise-group {font-size: .7rem; font-weight: 700; color: var(--lime)}
+.exercise-meta {font-weight: 400; font-size: .72rem}
+.exercise-photos {display: grid; grid-template-columns: repeat(auto-fit,minmax(105px,1fr)); gap: 7px; margin: 13px 0}
+.exercise-photos figure {margin: 0; min-width: 0}
+.exercise-photos img {width: 100%; height: clamp(115px, 42vw, 225px); object-fit: contain; background: #fff; border-radius: 11px}
+.exercise-photos figcaption {text-align:center; color: var(--muted); font-size: .73rem; margin-top: 2px}
+.exercise-clocks {display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin: 14px 0}
+.exercise-clock {border: 1px solid var(--border); padding: 8px; background: var(--background); border-radius: 13px; min-width: 0}
+.clock-running {border-color: var(--teal)}
+.clock-heading {display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; font-size: .82rem}
+.clock-heading label {margin: 0}
+.duration {display: flex; align-items: center; gap: 3px; color: var(--muted)}
+.duration input {width: 51px; padding: 5px 2px; min-height: 32px; font-size: .77rem}
+.exercise-clock output {display: block; font-weight: 760; color: var(--lime); font-variant-numeric: tabular-nums; font-size: 1.55rem; margin: 6px 0}
+.clock-message {display: block; min-height: 1.08rem; color: var(--teal); font-size: .72rem}
+.clock-buttons {display: grid; gap: 5px}
+.clock-buttons button {padding: 6px 4px; font-size: .8rem}
+@media (min-width: 480px) {
+  .clock-buttons {grid-template-columns: repeat(2, minmax(0,1fr))}
+  .exercise-card summary {grid-template-columns: 104px minmax(0,1fr) auto}
+  .exercise-thumb {width: 104px; height: 82px}
+}

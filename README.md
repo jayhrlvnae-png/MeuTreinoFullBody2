@@ -5,15 +5,23 @@ Projeto Android gratuito, offline e sem login.
 ## Recursos
 
 - Treinos A–E, de segunda a sexta, com sete exercícios por treino.
-- Desenhos esquemáticos e orientações de movimento (não fotografias).
+- Fotos e ilustrações de execução incluídas no APK para acesso offline.
 - Registro de séries marcadas, repetições e cargas.
-- Descanso cronometrado e cardio com registro de duração e distância manual.
+- Cronômetros de execução e descanso em cada exercício, com duração ajustável e sinais sonoros distintos. Cardio com registro de duração e distância manual.
 - Diário de dor, cansaço, formigamento e anotações.
 - Histórico e ciclos de oito semanas. Início de novo ciclo com confirmação, sem apagar os anteriores.
 
 ## Gerar APK sem pagar
 
 Envie todos os arquivos deste projeto à raiz do repositório GitHub `MeuTreinoFullBody2`, preservando as pastas `.github` e `app`. Cada `push` na branch `main` inicia o workflow **Compilar APK Android**. Na aba **Actions**, abra a execução concluída, baixe o artefato **MeuTreinoFullBody2-APK**, extraia o ZIP e instale `app-debug.apk`.
+
+### Imagens
+
+Antes de compilar localmente, execute `python3 scripts/fetch_exercise_images.py` uma vez. O GitHub Actions já inclui essa etapa. O aplicativo exibe as imagens sem conexão.
+
+- [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), [Unlicense](https://github.com/yuhonas/free-exercise-db/blob/main/LICENSE.md).
+- [Wallpushup — CDC](https://commons.wikimedia.org/wiki/File:Wallpushup-CDC_strength_training_for_older_adults.gif), domínio público nos Estados Unidos, sem alterações.
+- [Birddog exercise — Pk0001](https://commons.wikimedia.org/wiki/File:Birddog_exercise.svg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), sem alterações.
 
 ### Projeto
 

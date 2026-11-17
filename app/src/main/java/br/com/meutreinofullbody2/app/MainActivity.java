@@ -44,6 +44,8 @@ public final class MainActivity extends Activity {
                     String mime = asset.endsWith(".html") ? "text/html" :
                         asset.endsWith(".js") ? "text/javascript" :
                         asset.endsWith(".css") ? "text/css" :
+                        asset.endsWith(".jpg") ? "image/jpeg" :
+                        asset.endsWith(".gif") ? "image/gif" :
                         asset.endsWith(".svg") ? "image/svg+xml" : "text/plain";
                     return new WebResourceResponse(mime, "UTF-8", getAssets().open(asset));
                 } catch (IOException error) {
