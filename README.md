@@ -4,7 +4,7 @@ Projeto Android gratuito, offline e sem login.
 
 ## Recursos
 
-- Treinos A–G, de segunda a domingo, com sete exercícios por treino.
+- Treinos A–E, de segunda a sexta, com esteira ou caminhada em cada sessão.
 - Fotos e ilustrações de execução incluídas no APK para acesso offline.
 - Registro de séries marcadas, repetições e cargas.
 - Cronômetros de execução e descanso em cada exercício, com duração ajustável e sinais sonoros distintos. Cardio com registro de duração e distância manual.
