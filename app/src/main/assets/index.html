@@ -81,6 +81,126 @@ const alternatives={
     "Supino inclinado com halteres"
   ]
 };
+
+// The catalog contains full metadata for the chosen movement. Replaced slots
+// retain their original keys; logs and loads remain attached to the actual name.
+const replacementMetadata = {
+  "Stiff na V-Squat": {"group":"Posterior da coxa","target":"10–12","instruction":"Confirme com o instrutor o ajuste da V-Squat para o stiff, os apoios e as travas. Use o movimento de quadril orientado para esse aparelho, sem transformar o exercício em agachamento."},
+  "Abdominal na polia alta": {
+    "group": "Abdômen",
+    "target": "12",
+    "instruction": "Ajoelhe diante da polia alta com a corda junto à cabeça. Flexione o tronco de forma controlada, sem puxar com os braços."
+  },
+  "Prancha lateral": {
+    "group": "Abdômen",
+    "target": "20–30 s",
+    "instruction": "De lado, apoie o antebraço e mantenha o corpo alinhado, respirando normalmente."
+  },
+  "Abdominal com braços estendidos": {
+    "group": "Abdômen",
+    "target": "12",
+    "instruction": "Deite de costas com os joelhos flexionados e os braços estendidos acima da cabeça. Eleve levemente o tronco sem impulso."
+  },
+  "Stiff com halteres": {
+    "group": "Posterior da coxa",
+    "target": "10–12",
+    "instruction": "Com os joelhos levemente flexionados, leve o quadril para trás e incline o tronco mantendo a coluna estável. Retorne com controle."
+  },
+  "Extensão de quadril na polia": {
+    "group": "Glúteos",
+    "target": "12 por perna",
+    "instruction": "Use a tornozeleira na polia baixa e um apoio firme. Leve a perna para trás sem arquear a lombar."
+  },
+  "Abdução de quadril deitado": {
+    "group": "Abdutores",
+    "target": "12 por lado",
+    "instruction": "Deite de lado e eleve a perna de cima com controle, sem girar o tronco."
+  },
+  "Adução de quadril na polia": {
+    "group": "Adutores",
+    "target": "12 por perna",
+    "instruction": "Use tornozeleira na polia baixa e apoio firme. Aproxime a perna da linha do corpo com controle."
+  },
+  "Tríceps acima da cabeça com corda": {
+    "group": "Tríceps",
+    "target": "10–12",
+    "instruction": "Use a corda na polia. Estenda os cotovelos com os braços acima da cabeça, mantendo o tronco estável."
+  }
+};
+const originalAlternatives = Object.fromEntries(Object.entries(alternatives).map(([name,options])=>[name,[...options]]));
+function exerciseGroup(item) {
+    if (item[5]==='adutora') return 'Adutores';
+    if (item[5]==='abdutora') return 'Abdutores';
+    return ({'Quadríceps':'Pernas','Peito e costas':'Costas','Ombros e costas':'Ombros'})[item[1]] || item[1];
+}
+const replacementGroups = new Map();
+for (const plan of plans) for (const item of plan.items) {
+    if (item[1]==='Condicionamento') continue;
+    const group=exerciseGroup(item);
+    if (!replacementGroups.has(group)) replacementGroups.set(group,new Set());
+    for (const name of [item[0],...(originalAlternatives[item[0]]||[])]) replacementGroups.get(group).add(name);
+}
+for (const [name,metadata] of Object.entries(replacementMetadata)) {
+    const group=metadata.group==='Quadríceps'?'Pernas':metadata.group;
+    if (!replacementGroups.has(group)) replacementGroups.set(group,new Set());
+    replacementGroups.get(group).add(name);
+}
+for (const plan of plans) for (const item of plan.items) {
+    if (item[1]!=='Condicionamento') alternatives[item[0]]=[...replacementGroups.get(exerciseGroup(item))].filter(name=>name!==item[0]);
+}
+function slotKeyAt(planIndex,index) {
+    const revision=plans[planIndex].items[index][6];
+    return planIndex+'-'+index+(revision?'-'+revision:'');
+}
+function normalizedExerciseName(name) {return name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim()}
+function selectedWeekExercises() {
+    const selected=new Map();
+    // Reserve even the original movements. A replacement must not be an
+    // exercise already present anywhere in the five-day base schedule.
+    const used=new Set(plans.flatMap(plan=>plan.items.filter(item=>item[1]!=='Condicionamento').map(item=>normalizedExerciseName(item[0]))));
+    for (let planIndex=0;planIndex<plans.length;planIndex++) {
+        plans[planIndex].items.forEach((item,index)=>{
+            const id=slotKeyAt(planIndex,index), candidate=db.swaps[id];
+            if (candidate && alternatives[item[0]]?.includes(candidate) && !used.has(normalizedExerciseName(candidate))) {
+                selected.set(id,candidate);
+                used.add(normalizedExerciseName(candidate));
+            } else selected.set(id,item[0]);
+        });
+    }
+    return selected;
+}
+function availableReplacements(index) {
+    const item=plans[day].items[index],id=slotKey(index),selected=selectedWeekExercises();
+    const used=new Set(plans.flatMap(plan=>plan.items.filter(e=>e[1]!=='Condicionamento').map(e=>normalizedExerciseName(e[0]))));
+    for (const [other,name] of selected) if(other!==id) used.add(normalizedExerciseName(name));
+    return (alternatives[item[0]]||[]).filter(name=>!used.has(normalizedExerciseName(name)));
+}
+function replacementHTML(index) {
+    const item=plans[day].items[index];
+    if (item[1]==='Condicionamento') return '';
+    const id=slotKey(index),selected=selectedExercise(index),options=availableReplacements(index);
+    return `<details class="swap-picker"><summary>Trocar exercício</summary>
+    <p class="tiny muted">Alternativas para ${esc(exerciseGroup(item).toLocaleLowerCase('pt-BR'))}, sem repetir os exercícios dos treinos A–E. A escolha fica salva neste aparelho. Use uma opção com equipamento disponível e execução orientada.</p>
+    <label for="swap-${id}">Escolher outro exercício</label>
+    <select id="swap-${id}" onchange="swapExercise('${id}',this.value)">
+      <option value="" ${selected===item[0]?'selected':''}>${esc(item[0])} (principal)</option>
+      ${options.map(name=>`<option value="${esc(name)}" ${name===selected?'selected':''}>${esc(name)}</option>`).join('')}
+    </select>
+    ${options.length?'':'<p class="tiny muted">As alternativas deste grupo já estão nos outros treinos. Não foi oferecido um exercício repetido.</p>'}
+    ${selected!==item[0]?`<button type="button" style="margin-top:10px" onclick="swapExercise('${id}','')">Voltar ao exercício principal</button>`:''}
+    </details>`;
+}
+function selectedInstruction(item,name) {
+    if (replacementMetadata[name]) return replacementMetadata[name].instruction;
+    if (name!==item[0]) {
+        for(const plan of plans) {const source=plan.items.find(e=>e[0]===name);if(source)return instructions[source[5]]||'Execute de forma lenta, controlada e sem dor.'}
+        return 'Ajuste o equipamento para esta alternativa e execute com controle, sem dor. Confirme a técnica com o instrutor.';
+    }
+    if(name==='Agachamento na V-Squat (de frente)')return 'Confirme o ajuste e as travas do aparelho com o instrutor da academia.';
+    if(name==='Cadeira extensora')return 'Sentado, estenda os joelhos com controle e baixe o apoio devagar.';
+    return instructions[item[5]]||'Execute de forma lenta, controlada e sem dor.';
+}
+
 const instructions={
 'flexao-banco':'Apoie as mãos em um banco firme e mantenha o tronco alinhado.',
 degrau:'Use um degrau baixo e firme. Suba e desça com controle, alternando as pernas.',
@@ -107,14 +227,8 @@ function weekNo(){return Math.min(8,cycleWeeksElapsed()+1)}
 function renewalHTML(){
     return cycleWeeksElapsed()>=8 ? `<section class="card renewal"><p>As oito semanas deste ciclo terminaram.</p><button class="primary" onclick="newCycle()">Iniciar novo ciclo</button></section>` : '';
 }
-function slotKey(i){
-    const revision=plans[day].items[i][6];
-    return revision ? day+'-'+i+'-'+revision : day+'-'+i;
-}
-function selectedExercise(i){
-    const original=plans[day].items[i][0], alternative=db.swaps[slotKey(i)];
-    return alternatives[original]?.includes(alternative) ? alternative : original;
-}
+function slotKey(i){return slotKeyAt(day,i)}
+function selectedExercise(i){return selectedWeekExercises().get(slotKey(i)) || plans[day].items[i][0]}
 function entryKey(i){
     const item=plans[day].items[i], name=selectedExercise(i);
     const base=[db.cycle,weekNo(),day,i].join(':');
@@ -140,22 +254,39 @@ else a.innerHTML=`<h2>Histórico e ciclos</h2>${renewalHTML()}<section class="ca
 }
 function exerciseTarget(item,name) {
     if (name===item[0]) return item[3];
+    if (replacementMetadata[name]) return replacementMetadata[name].target;
+    for(const plan of plans){const original=plan.items.find(e=>e[0]===name);if(original)return original[3]}
     if (name==='Prancha') return '20–30 s';
     if (name==='Leg press unilateral') return '10–12 por perna';
     
     return item[3];
 }
-function exercise(e,i){let id=slotKey(i), name=selectedExercise(i),target=exerciseTarget(e,name),swap=alternatives[e[0]]||[],k=entryKey(i),values=db.entries[k]||{},checked=db.completed[k]||[],photos=exerciseImages[name]||[],clockId=k.replaceAll(':','-');
+function exercise(e,i){let id=slotKey(i), name=selectedExercise(i),target=exerciseTarget(e,name),k=entryKey(i),values=db.entries[k]||{},checked=db.completed[k]||[],photos=exerciseImages[name]||[],clockId=k.replaceAll(':','-');
     return `<details class="card exercise-card" ${expandedExercises.has(id)?'open':''} ontoggle="this.open?expandedExercises.add('${id}'):expandedExercises.delete('${id}')"><summary>
-    ${photos.length?`<img class="exercise-thumb" loading="lazy" src="images/${photos[0]}" alt="">`:'<span class="exercise-thumb no-thumb">Máquina<br>da academia</span>'}
+    ${photos.length?`<img class="exercise-thumb" loading="lazy" src="images/${photos[0]}" alt="">`:'<span class="exercise-thumb no-thumb">Sem foto<br>específica</span>'}
     <span><span class="exercise-group">${e[1]}</span><b>${i+1}. ${esc(name)}</b>${e[7]?'<small class="exercise-meta">Opcional</small>':''}<small class="exercise-meta">${e[2]} séries × ${target} · ${e[4]} s de descanso</small><small id="sc${i}" class="exercise-meta">${completedSetCount(i)}/${e[2]} séries marcadas</small></span>
     </summary><div class="exercise-clocks">${exerciseClockHTML(clockId,'execution',executionDuration(target))}${exerciseClockHTML(clockId,'rest',e[4])}</div>
-    ${exercisePictures(photos,name)}<p class="tiny">${name===e[0]?(name==='Agachamento na V-Squat (de frente)'?'Confirme o ajuste e as travas do aparelho com o instrutor da academia.':name==='Cadeira extensora'?'Sentado, estenda os joelhos com controle e baixe o apoio devagar.':instructions[e[5]]||'Execute de forma lenta, controlada e sem dor.'):name==='Cadeira adutora'?'Use o ajuste de fechamento das pernas na cadeira conjugada.':'Use uma carga e uma amplitude confortáveis para esta alternativa.'}</p>${swap.length?`<label for="swap-${id}">Alternativas deste exercício</label><select id="swap-${id}" onchange="swapExercise('${id}',this.value)"><option value="">${esc(e[0])} (principal)</option>${swap.map(option=>`<option value="${esc(option)}" ${option===name?'selected':''}>${esc(option)}</option>`).join('')}</select>`:''}${e[0]==='Crucifixo na polia'?'<p class="tiny muted">Use a estação de polia do tríceps corda. Se tiver uma única polia, escolha a versão unilateral.</p>':''}<p><button type="button" class="exercise-history" onclick="showExerciseProgress(${i})">Ver evolução</button></p><div class="sets">${Array.from({length:e[2]},(_,s)=>`<label><input type="checkbox" ${checked[s]?'checked':''} onchange="markSet(${i},${s},this.checked)">Série ${s+1}</label>`).join('')}</div><div class="row"><label>Séries<input id="s${i}" type="number" min="0" value="${esc(values.sets??e[2])}" oninput="setEntry(${i},'sets',this.value)"></label><label>${/ (?:s|min)$/.test(target)?'Tempo':'Reps'}<input id="r${i}" type="number" min="0" value="${esc(values.reps??parseInt(target)??10)}" oninput="setEntry(${i},'reps',this.value)"></label><label>Kg<input id="k${i}" type="number" min="0" step="0.5" value="${esc(values.kg??0)}" oninput="setEntry(${i},'kg',this.value)"></label></div></details>`}
+    ${exercisePictures(photos,name)}<p class="tiny">${esc(selectedInstruction(e,name))}</p>${replacementHTML(i)}${e[0]==='Crucifixo na polia'?'<p class="tiny muted">Use a estação de polia do tríceps corda. Se tiver uma única polia, escolha a versão unilateral.</p>':''}<p><button type="button" class="exercise-history" onclick="showExerciseProgress(${i})">Ver evolução</button></p><div class="sets">${Array.from({length:e[2]},(_,s)=>`<label><input type="checkbox" ${checked[s]?'checked':''} onchange="markSet(${i},${s},this.checked)">Série ${s+1}</label>`).join('')}</div><div class="row"><label>Séries<input id="s${i}" type="number" min="0" value="${esc(values.sets??e[2])}" oninput="setEntry(${i},'sets',this.value)"></label><label>${/ (?:s|min)$/.test(target)?'Tempo':'Reps'}<input id="r${i}" type="number" min="0" value="${esc(values.reps??parseInt(target)??10)}" oninput="setEntry(${i},'reps',this.value)"></label><label>Kg<input id="k${i}" type="number" min="0" step="0.5" value="${esc(values.kg??0)}" oninput="setEntry(${i},'kg',this.value)"></label></div></details>`}
 function fmt(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function updateClock(){const clock=document.getElementById('clock');if(clock)clock.textContent=fmt(seconds)}
 function startClock(){if(running)return;running=true;lastTick=Date.now();timer=setInterval(()=>{const elapsed=Math.floor((Date.now()-lastTick)/1000);if(elapsed>0){seconds+=elapsed;lastTick+=elapsed*1000;updateClock()}},250)}
 function pauseClock(){running=false;clearInterval(timer)}
 function resetClock(){pauseClock();seconds=0;updateClock()}
-function swapExercise(id,value){if(value)db.swaps[id]=value;else delete db.swaps[id];save();render()}function finish(){let p=plans[day],progress=getProgress();if(!p.items.some((_,index)=>completedSetCount(index)>0)&&!confirm('Nenhuma série foi marcada como concluída. Deseja salvar mesmo assim?'))return;db.logs.unshift({date:new Date().toLocaleString('pt-BR'),loggedAt:Date.now(),cycle:db.cycle,week:weekNo(),workout:'ABCDE'[day],done:progress.done,total:progress.t,items:p.items.map((e,i)=>{let v=db.entries[entryKey(i)]||{};return {name:selectedExercise(i),sets:v.sets??e[2],reps:v.reps??exerciseTarget(e,selectedExercise(i)),kg:v.kg??0,completed:completedSetCount(i)}}).filter((item,index)=>!p.items[index][7]||item.completed>0)});save();alert('Treino salvo no aparelho.');tab='historico';render()}
+function swapExercise(id,value){
+    const index=plans[day].items.findIndex((_,i)=>slotKey(i)===id);
+    if(index<0)return false;
+    if(value && !availableReplacements(index).includes(value)){
+        alert('Este exercício já está no treino ou não é uma alternativa deste grupo. Escolha outra opção.');
+        render();return false;
+    }
+    if((value||plans[day].items[index][0])===selectedExercise(index))return true;
+    const clockPrefix=entryKey(index).replaceAll(':','-');
+    for(const mode of ['execution','rest']) {
+        const clock=exerciseClocks.get(clockPrefix+'-'+mode);
+        if(clock?.until){clock.remaining=Math.max(0,clock.until-Date.now());clock.until=null;}
+    }
+    if(value)db.swaps[id]=value;else delete db.swaps[id];
+    save();render();return true;
+}function finish(){let p=plans[day],progress=getProgress();if(!p.items.some((_,index)=>completedSetCount(index)>0)&&!confirm('Nenhuma série foi marcada como concluída. Deseja salvar mesmo assim?'))return;db.logs.unshift({date:new Date().toLocaleString('pt-BR'),loggedAt:Date.now(),cycle:db.cycle,week:weekNo(),workout:'ABCDE'[day],done:progress.done,total:progress.t,items:p.items.map((e,i)=>{let v=db.entries[entryKey(i)]||{};return {name:selectedExercise(i),sets:v.sets??e[2],reps:v.reps??exerciseTarget(e,selectedExercise(i)),kg:v.kg??0,completed:completedSetCount(i)}}).filter((item,index)=>!p.items[index][7]||item.completed>0)});save();alert('Treino salvo no aparelho.');tab='historico';render()}
 function addDiary(){db.diary.unshift({date:new Date().toLocaleString('pt-BR'),workout:'ABCDE'[+document.getElementById('dw').value],note:document.getElementById('note').value,region:document.getElementById('region').value,pain:document.getElementById('pain').value,fatigue:document.getElementById('fatigue').value,tingle:document.getElementById('tingle').checked});save();render()}function addCardio(){db.cardio.unshift({date:new Date().toLocaleString('pt-BR'),kind:document.getElementById('activity').value,time:fmt(seconds),km:document.getElementById('distance').value||0});save();pauseClock();seconds=0;render()}function newCycle(){if(cycleWeeksElapsed()<8&&!confirm('Ainda não se passaram 8 semanas. Deseja mesmo iniciar um novo ciclo mantendo todos os registros?'))return;if(!confirm('Iniciar novo ciclo? Os resultados anteriores serão preservados.'))return;db.cycle++;db.start=today();save();render()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}render();
 </script></body></html>

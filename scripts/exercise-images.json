@@ -235,6 +235,38 @@
     "Inclinação pélvica em pé": [
       "Standing_Pelvic_Tilt/0.jpg",
       "Standing_Pelvic_Tilt/1.jpg"
+    ],
+    "Abdominal na polia alta": [
+      "Cable_Crunch/0.jpg",
+      "Cable_Crunch/1.jpg"
+    ],
+    "Prancha lateral": [
+      "Side_Bridge/0.jpg",
+      "Side_Bridge/1.jpg"
+    ],
+    "Abdominal com braços estendidos": [
+      "Crunch_-_Hands_Overhead/0.jpg",
+      "Crunch_-_Hands_Overhead/1.jpg"
+    ],
+    "Stiff com halteres": [
+      "Stiff-Legged_Dumbbell_Deadlift/0.jpg",
+      "Stiff-Legged_Dumbbell_Deadlift/1.jpg"
+    ],
+    "Extensão de quadril na polia": [
+      "One-Legged_Cable_Kickback/0.jpg",
+      "One-Legged_Cable_Kickback/1.jpg"
+    ],
+    "Abdução de quadril deitado": [
+      "Side_Leg_Raises/0.jpg",
+      "Side_Leg_Raises/1.jpg"
+    ],
+    "Adução de quadril na polia": [
+      "Cable_Hip_Adduction/0.jpg",
+      "Cable_Hip_Adduction/1.jpg"
+    ],
+    "Tríceps acima da cabeça com corda": [
+      "Triceps_Overhead_Extension_with_Rope/0.jpg",
+      "Triceps_Overhead_Extension_with_Rope/1.jpg"
     ]
   },
   "files": [
@@ -701,6 +733,70 @@
     [
       "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Wide-Grip_Lat_Pulldown/1.jpg",
       "Wide-Grip_Lat_Pulldown/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Cable_Crunch/0.jpg",
+      "Cable_Crunch/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Cable_Crunch/1.jpg",
+      "Cable_Crunch/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Bridge/0.jpg",
+      "Side_Bridge/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Bridge/1.jpg",
+      "Side_Bridge/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Crunch_-_Hands_Overhead/0.jpg",
+      "Crunch_-_Hands_Overhead/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Crunch_-_Hands_Overhead/1.jpg",
+      "Crunch_-_Hands_Overhead/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Stiff-Legged_Dumbbell_Deadlift/0.jpg",
+      "Stiff-Legged_Dumbbell_Deadlift/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Stiff-Legged_Dumbbell_Deadlift/1.jpg",
+      "Stiff-Legged_Dumbbell_Deadlift/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/One-Legged_Cable_Kickback/0.jpg",
+      "One-Legged_Cable_Kickback/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/One-Legged_Cable_Kickback/1.jpg",
+      "One-Legged_Cable_Kickback/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Leg_Raises/0.jpg",
+      "Side_Leg_Raises/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Leg_Raises/1.jpg",
+      "Side_Leg_Raises/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Cable_Hip_Adduction/0.jpg",
+      "Cable_Hip_Adduction/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Cable_Hip_Adduction/1.jpg",
+      "Cable_Hip_Adduction/1.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Triceps_Overhead_Extension_with_Rope/0.jpg",
+      "Triceps_Overhead_Extension_with_Rope/0.jpg"
+    ],
+    [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Triceps_Overhead_Extension_with_Rope/1.jpg",
+      "Triceps_Overhead_Extension_with_Rope/1.jpg"
     ]
   ]
 }
