@@ -30,6 +30,8 @@ jobs:
             sdkmanager=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | sort -V | tail -n 1)
             "$sdkmanager" "platforms;android-35" "build-tools;35.0.0"
           fi
+      - name: Validar treinos e substituições
+        run: node tests/exercise-swaps.test.cjs
       - name: Incluir imagens para uso offline
         run: python3 scripts/fetch_exercise_images.py
       - name: Compilar APK de teste
