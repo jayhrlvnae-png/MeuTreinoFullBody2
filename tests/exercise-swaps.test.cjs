@@ -3,23 +3,41 @@ const root=path.join(__dirname,'..');const html=fs.readFileSync(path.join(root,'
 const code=html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'scripts/exercise-images.json')));
 function app(old={}){const storage=new Map([['meutreinofullbody2_v1',JSON.stringify(old)]]),elements=new Map();const ctx=vm.createContext({console,Date,Set,Map,JSON,Math,Number,String,Object,Array,encodeURIComponent,parseInt,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{getElementById:k=>{if(!elements.has(k))elements.set(k,{innerHTML:'',scrollIntoView(){}});return elements.get(k)}},exerciseImages:manifest.exercises,exerciseClocks:new Map(),exerciseClockHTML:()=>'',executionDuration:t=>/^\d+.* s$/.test(t)?parseInt(t):30,progressionHTML:()=>'',alert:()=>{},confirm:()=>true,setInterval(){},clearInterval(){}});vm.runInContext(code,ctx);return{run:s=>vm.runInContext(s,ctx),storage,ctx}}
-let a=app();assert.equal(a.run('plans.length'),5);assert.equal(a.run("plans.flatMap(p=>p.items).filter(e=>e[1]!=='Condicionamento'&&e[2]!==3).length"),0);
-// Every strength slot has an on-demand chooser and at least one unused option.
-a.run("day=0");let slots=JSON.parse(a.run("JSON.stringify(plans.flatMap((p,d)=>p.items.map((e,i)=>({d,i,group:e[1],name:e[0]}))))"));
-for(const slot of slots){a.run('day='+slot.d);if(slot.group==='Condicionamento'){assert.equal(a.run(`replacementHTML(${slot.i})`),'');continue}assert.ok(a.run(`replacementHTML(${slot.i})`).includes('Trocar exercício'),slot.name);assert.ok(a.run(`availableReplacements(${slot.i}).length`)>0,slot.name+' without options');const scheduled=slots.map(s=>s.name);const options=JSON.parse(a.run(`JSON.stringify(availableReplacements(${slot.i}))`));for(const n of options)assert.ok(!scheduled.includes(n),'Existing exercise offered: '+n)}
-// Requested step replacement: a unique unilateral leg press, with correct target.
-a.run('day=3');const step=a.run("plans[day].items.findIndex(e=>e[0]==='Subida no degrau')");const id=a.run(`slotKey(${step})`);const originalKey=a.run(`entryKey(${step})`);a.run(`db.entries[${JSON.stringify(originalKey)}]={kg:17}; db.completed[${JSON.stringify(originalKey)}]=[true];`);
-assert.equal(a.run(`swapExercise(${JSON.stringify(id)},'Leg press unilateral')`),true);assert.equal(a.run(`selectedExercise(${step})`),'Leg press unilateral');assert.equal(a.run(`exerciseTarget(plans[day].items[${step}],selectedExercise(${step}))`),'10–12 por perna');assert.notEqual(a.run(`entryKey(${step})`),originalKey);assert.equal(a.run(`completedSetCount(${step})`),0);
-// Active clocks on the replaced exercise are paused, with their time preserved.
-let newKey=a.run(`entryKey(${step})`);a.run(`exerciseClocks.set(${JSON.stringify(newKey.replaceAll(':','-')+'-rest')},{until:Date.now()+30000,remaining:30000})`);assert.equal(a.run(`swapExercise(${JSON.stringify(id)},'')`),true);assert.equal(a.run(`exerciseClocks.get(${JSON.stringify(newKey.replaceAll(':','-')+'-rest')}).until`),null);assert.equal(a.run(`entryKey(${step})`),originalKey);assert.equal(a.run(`db.entries[entryKey(${step})].kg`),17);assert.equal(a.run(`completedSetCount(${step})`),1);
-assert.equal(a.run(`swapExercise(${JSON.stringify(id)},'Leg press unilateral')`),true);
-a.run('day=4');assert.ok(!JSON.parse(a.run('JSON.stringify(availableReplacements(0))')).includes('Leg press unilateral'));assert.equal(a.run("swapExercise(slotKey(0),'Leg press unilateral')"),false);assert.equal(a.run("swapExercise(slotKey(0),'Mesa flexora')"),false);assert.equal(a.run("swapExercise(slotKey(0),'Exercício inventado')"),false);
-// Persistence and old versions remain readable; no log or original entry is erased.
-let saved=JSON.parse(a.storage.get('meutreinofullbody2_v1'));let reload=app(saved);reload.run('day=3');assert.equal(reload.run(`selectedExercise(${step})`),'Leg press unilateral');
-let legacy=app({cycle:1,start:'2026-11-19',logs:[{date:'ontem',workout:'A',items:[{name:'Supino com halteres',kg:8,completed:3}]}],swaps:{'0-0-supino-reto-maquina':'Supino com halteres'},entries:{'old-key':{kg:10}}});legacy.run('day=0');assert.equal(legacy.run('selectedExercise(0)'),'Supino com halteres');assert.equal(legacy.run('db.logs.length'),1);assert.equal(legacy.run("db.entries['old-key'].kg"),10);
-// Duplicate saved choices from older versions resolve deterministically.
-const duplicates=app({swaps:{'0-0-supino-reto-maquina':'Supino com halteres','2-2-supino-inclinado-maquina':'Supino com halteres'}});const chosen=JSON.parse(duplicates.run('JSON.stringify([...selectedWeekExercises().values()])'));assert.equal(chosen.filter(n=>n==='Supino com halteres').length,1);
-// Timed alternatives must update the target; pictures must match the chosen name.
-a.run('day=0');assert.equal(a.run("exerciseTarget(plans[0].items[5],'Prancha lateral')"),'20–30 s');assert.equal(a.run("swapExercise(slotKey(5),'Prancha lateral')"),true);let rendered=a.run('exercise(plans[0].items[5],5)');assert.ok(rendered.includes('Side_Bridge/0.jpg'));assert.ok(rendered.includes('3 séries × 20–30 s'));
-const paths=new Set(manifest.files.map(f=>f[1]));for(const images of Object.values(manifest.exercises))for(const image of images)assert.ok(paths.has(image),'Missing bundled image '+image);
-console.log('PASS: all strength choosers, weekly exclusions, persistence, old data, rollback, clock pause, target units and image mapping.');
+let a=app();
+assert.equal(a.run('plans.length'),5);
+const plans=JSON.parse(a.run('JSON.stringify(plans)'));
+const names=plans.flatMap(p=>p.items.filter(e=>e[1]!=='Condicionamento').map(e=>e[0]));
+assert.equal(names.length,44);assert.equal(new Set(names).size,44);
+const prohibited=['Subida no degrau','Flexão inclinada no banco','Mesa flexora','Flexora sentada','Flexora em pé','Crucifixo na máquina','Agachamento no Smith','Desenvolvimento na máquina','Panturrilha sentado','Panturrilha em pé'];
+for(const name of prohibited)assert.ok(!a.run('Object.hasOwn(gymCatalog,'+JSON.stringify(name)+')'),name);
+const equipment=JSON.parse(a.run('JSON.stringify(Object.values(gymCatalog).map(e=>e.equipment))'));
+assert.ok(!equipment.some(e=>/Smith|Peck|flexora|elástico|tornozeleira/i.test(e)));
+for(let d=0;d<5;d++){
+ a.run('day='+d);const plan=plans[d];const groups=plan.items.map(e=>e[1]);
+ for(const g of ['Pernas','Peito','Costas','Ombros','Bíceps','Tríceps','Abdômen','Condicionamento'])assert.ok(groups.includes(g),'Missing full body '+d+' '+g);
+ for(const group of new Set(groups)){const indices=groups.flatMap((g,i)=>g===group?[i]:[]);assert.equal(indices.at(-1)-indices[0]+1,indices.length,'Split block '+group)}
+ assert.equal(groups.at(-1),'Condicionamento');assert.equal(plan.items.filter(e=>e[1]==='Condicionamento').length,1);
+ for(let i=0;i<plan.items.length;i++){
+  const item=plan.items[i];if(item[1]==='Condicionamento'){assert.equal(item[2],1);continue}assert.equal(item[2],3);
+  const options=JSON.parse(a.run('JSON.stringify(availableReplacements('+i+'))'));
+  assert.ok(options.length>0,item[0]+' has no unused choice');for(const n of options)assert.ok(!names.includes(n),'Repeating '+n);
+  const output=a.run('exercise(plans[day].items['+i+'],'+i+')');assert.ok(output.includes('aria-haspopup="dialog"'));assert.ok(!output.includes('swap-picker'));assert.ok(!output.includes('<select id="swap-'));
+ }
+}
+// Restore original entries after a swap, pause its clock, persist and exclude it elsewhere.
+a.run('day=0');const originalKey=a.run('entryKey(2)');a.run('db.entries['+JSON.stringify(originalKey)+']={kg:17};db.completed['+JSON.stringify(originalKey)+']=[true]');
+assert.equal(a.run("swapExercise(slotKey(2),'Supino no chão com halteres')"),true);assert.equal(a.run('selectedExercise(2)'),'Supino no chão com halteres');assert.equal(a.run('completedSetCount(2)'),0);
+const newKey=a.run('entryKey(2)');a.run('exerciseClocks.set('+JSON.stringify(newKey.replaceAll(':','-')+'-rest')+',{until:Date.now()+30000,remaining:30000})');
+assert.equal(a.run("swapExercise(slotKey(2),'')"),true);assert.equal(a.run('db.entries[entryKey(2)].kg'),17);assert.equal(a.run('completedSetCount(2)'),1);assert.equal(a.run('exerciseClocks.get('+JSON.stringify(newKey.replaceAll(':','-')+'-rest')+').until'),null);
+assert.equal(a.run("swapExercise(slotKey(2),'Supino no chão com halteres')"),true);
+a.run('day=1');assert.ok(!JSON.parse(a.run('JSON.stringify(availableReplacements(2))')).includes('Supino no chão com halteres'));assert.equal(a.run("swapExercise(slotKey(2),'Supino no chão com halteres')"),false);assert.equal(a.run("swapExercise(slotKey(2),'Mesa flexora')"),false);
+const reload=app(JSON.parse(a.storage.get('meutreinofullbody2_v1')));reload.run('day=0');assert.equal(reload.run('selectedExercise(2)'),'Supino no chão com halteres');
+// Moving a card must not attach the old occupant's loads or completed series.
+const legacy=app({cycle:1,start:'2026-11-24',entries:{'1:1:0:4':{kg:11},'1:1:0:0:supino-reto-maquina':{kg:77}},completed:{'1:1:0:4':[true,false,true],'1:1:0:0:supino-reto-maquina':[true,true,true]},logs:[{date:'antes',items:[{name:'Supino reto na máquina',kg:77}]}],swaps:{}});
+legacy.run('day=0');assert.equal(legacy.run("db.logs[0].items[0].kg"),77);assert.equal(legacy.run("db.entries['1:1:0:4'].kg"),11);assert.equal(legacy.run("db.entries['1:1:academia20261124:0:rosca-alternada:Rosca%20alternada'].kg"),11);assert.equal(legacy.run("db.completed['1:1:academia20261124:0:rosca-alternada:Rosca%20alternada'].filter(Boolean).length"),2);assert.equal(legacy.run("db.entries['1:1:academia20261124:0:supino-reto-com-barra:Supino%20reto%20com%20barra']"),undefined);
+const entriesBefore=legacy.run('JSON.stringify(db.entries)');legacy.run('migrateGymRecords()');assert.equal(legacy.run('JSON.stringify(db.entries)'),entriesBefore);
+// Time units and images follow the chosen movement.
+a.run('day=0');assert.equal(a.run("exerciseTarget(plans[0].items[8],'Prancha lateral')"),'20–30 s');assert.equal(a.run("swapExercise(slotKey(8),'Prancha lateral')"),true);assert.ok(a.run('exercise(plans[0].items[8],8)').includes('Side_Bridge/0.jpg'));
+const files=new Set(manifest.files.map(f=>f[1]));for(const photos of Object.values(manifest.exercises))for(const photo of photos)assert.ok(files.has(photo));
+assert.ok(a.run("tab='cardio';render();document.getElementById('app').innerHTML").includes('<option>Bicicleta</option>'));
+console.log('PASS: photographed equipment whitelist, five grouped full-body days, 44 unique strength slots, three sets, daily cardio, inline name picker, no duplicates, clocks, persistence and safe legacy migration.');
