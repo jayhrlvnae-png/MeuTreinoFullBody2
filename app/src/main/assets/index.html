@@ -1,11 +1,11 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b121a"><title>Meu Treino Full Body 2</title><style>
 :root{font-family:system-ui,-apple-system,sans-serif;color:#e9f4fa;background:#081019}*{box-sizing:border-box}body{margin:0;max-width:850px;margin-inline:auto;padding:16px 16px 95px}h1{font-size:1.35rem;color:#d7ff4a}h2{font-size:1.12rem}small,.muted{color:#a6b9c7}button,input,textarea,select{font:inherit}button{background:#172737;border:1px solid #365064;color:#e9f4fa;border-radius:12px;padding:12px;cursor:pointer}button.active,.primary{background:#d5ff42;color:#152018;border-color:#d5ff42;font-weight:700}button:disabled{opacity:.4}.card{background:#101e2b;border:1px solid #273d4d;border-radius:17px;padding:15px;margin:12px 0}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row>*{flex:1}.days{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.days button{padding:10px 2px}.tabs{position:fixed;bottom:0;left:0;right:0;background:#081019;border-top:1px solid #29404f;display:flex;justify-content:center;padding:9px;z-index:4}.tabs button{border:0;min-width:65px;padding:11px 6px}input,textarea,select{width:100%;padding:11px;background:#0b1721;color:white;border:1px solid #415565;border-radius:10px}label{display:block;margin:9px 0 5px}textarea{min-height:90px}summary{cursor:pointer;font-weight:700}svg.diagram{width:100%;max-height:150px;background:#182937;border-radius:10px}p{line-height:1.45}.tiny{font-size:.82rem}#clock{font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:center;color:#d5ff42} .hidden{display:none!important}.sets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.sets label{border:1px solid #415565;border-radius:10px;padding:10px 6px;text-align:center;margin:0}.sets input{width:auto;vertical-align:middle;margin-right:3px}.progress{height:8px;background:#29404f;border-radius:20px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;background:#d5ff42}.note{font-size:.8rem;line-height:1.5;color:#b9c7d4}</style><link rel="stylesheet" href="workout.css"></head><body>
-<header><h1>MEU TREINO FULL BODY 2</h1><small>Offline • Treinos de segunda a sexta</small></header><div id="app"></div><nav class="tabs" id="tabs"></nav><dialog id="exercisePicker" aria-labelledby="picker-title"><div class="picker-head"><div><h2 id="picker-title">Trocar exercício</h2><small id="picker-group"></small></div><button type="button" aria-label="Fechar opções" onclick="document.getElementById('exercisePicker').close()">×</button></div><p class="tiny muted picker-note">Escolha uma alternativa disponível. Exercícios já usados nos treinos A–E ficam fora desta lista.</p><div id="picker-options"></div><p id="picker-empty" class="tiny muted picker-note" hidden>As alternativas deste grupo já estão nos outros treinos.</p></dialog><script src="exercise-images.js"></script><script src="workout-timers.js"></script><script src="progression.js"></script><script>
-const key='meutreinofullbody2_v1', old=JSON.parse(localStorage.getItem(key)||'{}');let db={cycle:1,start:today(),logs:[],diary:[],cardio:[],swaps:{},entries:{},completed:{},...old};function save(){localStorage.setItem(key,JSON.stringify(db))}function today(){const now=new Date();return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10)}const expandedExercises = new Set();let tab='treino',day=Math.min(4,(new Date().getDay()+6)%7);let timer=null,seconds=0,running=false,lastTick=0;
+<header><h1>MEU TREINO FULL BODY 2</h1><small>Offline • Treinos de segunda a sexta</small></header><div id="app"></div><nav class="tabs" id="tabs"></nav><dialog id="exercisePicker" aria-labelledby="picker-title"><div class="picker-head"><div><h2 id="picker-title">Trocar exercício</h2><small id="picker-group"></small></div><button type="button" aria-label="Fechar opções" onclick="document.getElementById('exercisePicker').close()">×</button></div><p class="tiny muted picker-note">Escolha uma alternativa bilateral para o mesmo músculo principal. Movimentos equivalentes já usados ficam fora da lista.</p><div id="picker-options"></div><p id="picker-empty" class="tiny muted picker-note" hidden>Não há outra alternativa bilateral não repetida para esse músculo nos aparelhos confirmados.</p></dialog><script src="exercise-images.js"></script><script src="workout-timers.js"></script><script src="progression.js"></script><script>
+const key='meutreinofullbody2_v1', old=JSON.parse(localStorage.getItem(key)||'{}');let db={cycle:1,start:today(),logs:[],diary:[],cardio:[],measurements:[],swaps:{},entries:{},completed:{},...old};function save(){localStorage.setItem(key,JSON.stringify(db))}function today(){const now=new Date();return new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10)}const expandedExercises = new Set();let tab='treino',day=Math.min(4,(new Date().getDay()+6)%7);let timer=null,seconds=0,running=false,lastTick=0;
 const legacyLayout = [{"title": "A — Peito, costas e braços", "items": [["Supino reto na máquina", "Peito", 3, "8–12", 90, "supino", "supino-reto-maquina"], ["Remada sentada", "Costas", 3, "10–12", 90, "remada"], ["Agachamento na V-Squat (de frente)", "Quadríceps", 3, "10–12", 90, "agachamento", "maquina-ombros"], ["Crucifixo na máquina", "Peito", 3, "10–12", 60, "crucifixo"], ["Rosca alternada", "Bíceps", 3, "10–12", 60, "rosca"], ["Prancha", "Abdômen", 3, "20–30 s", 60, "prancha"], ["Cadeira extensora", "Quadríceps", 3, "12", 75, "agachamento"], ["Esteira ou caminhada", "Condicionamento", 1, "10 min", 30, "caminhada", "cardio-diario"], ["Crucifixo inverso com halteres", "Ombros e costas", 3, "8–12", 75, "inverso", "crucifixo-inverso"], ["Abdominal oblíquo no solo", "Abdômen", 3, "8 cada lado", 60, "abdominal", "abdominal-obliquo"]]}, {"title": "B — Ombros, posterior e panturrilha", "items": [["Desenvolvimento sentado", "Ombros", 3, "8–12", 90, "desenvolvimento"], ["Puxada frontal", "Costas", 3, "10–12", 90, "puxada"], ["Mesa flexora", "Posterior da coxa", 3, "10–12", 75, "flexora"], ["Panturrilha no leg press", "Panturrilha", 3, "12–15", 60, "panturrilha", "panturrilha-leg-press"], ["Tríceps na polia", "Tríceps", 3, "10–12", 60, "triceps"], ["Abdominal curto", "Abdômen", 3, "12–15", 60, "abdominal"], ["Elevação lateral", "Ombros", 3, "12", 60, "lateral"], ["Supino no chão com halteres", "Peito", 3, "8–12", 75, "supino", "supino-chao"], ["Esteira ou caminhada", "Condicionamento", 1, "10 min", 30, "caminhada", "cardio-diario"], ["Sentar e levantar do banco", "Pernas", 3, "8–12", 75, "banco", "sentar-levantar"]]}, {"title": "C — Recuperação e técnica", "items": [["Esteira ou caminhada", "Condicionamento", 1, "10–15 min", 30, "caminhada"], ["Face pull na polia", "Ombros", 3, "12", 60, "face-pull", "face-pull"], ["Supino inclinado na máquina", "Peito", 3, "10–12", 60, "supino", "supino-inclinado-maquina"], ["Rosca martelo leve", "Bíceps", 3, "12", 60, "rosca"], ["Ponte de glúteos", "Glúteos", 3, "12", 60, "ponte"], ["Elevação curta de pernas estendidas", "Abdômen", 3, "8–12", 60, "elevacao-pernas", "elevacao-pernas-curta"], ["Cadeira adutora", "Quadril", 3, "12", 60, "adutora", "cadeira-adutora"], ["Remada curvada com dois halteres", "Costas", 3, "8–12", 75, "remada", "remada-curvada"], ["Inclinação pélvica em pé", "Abdômen", 3, "8–12", 60, "pelve", "inclinacao-pelvica"]]}, {"title": "D — Peito, costas e braços", "items": [["Pullover com halter", "Peito e costas", 3, "8–12", 90, "pullover", "pullover"], ["Puxada com braços estendidos", "Costas", 3, "10–12", 90, "puxada-estendida", "puxada-estendida"], ["Crucifixo na polia", "Peito", 3, "12", 60, "crucifixo", "crucifixo-polia"], ["Remada unilateral", "Costas", 3, "10 cada", 75, "remada"], ["Rosca direta", "Bíceps", 3, "10–12", 60, "rosca"], ["Tríceps corda", "Tríceps", 3, "10–12", 60, "triceps"], ["Abdominal bicicleta", "Abdômen", 3, "8 cada lado", 60, "bicicleta", "abdominal-bicicleta"], ["Subida no degrau", "Pernas", 3, "8 por perna", 75, "degrau", "subida-degrau"], ["Esteira ou caminhada", "Condicionamento", 1, "10 min", 30, "caminhada", "cardio-diario"], ["Flexora em pé", "Posterior da coxa", 3, "8 por perna", 75, "flexora", "flexora-em-pe"]]}, {"title": "E — Corpo inteiro e condicionamento", "items": [["Leg press leve", "Pernas", 3, "10–12", 90, "legpress"], ["Panturrilha em pé", "Panturrilha", 3, "12–15", 60, "panturrilha", "panturrilha-em-pe"], ["Flexora sentada", "Posterior da coxa", 3, "10–12", 75, "flexora", "flexora-sentada"], ["Remada máquina", "Costas", 3, "10–12", 75, "remada"], ["Elevação frontal com halteres", "Ombros", 3, "12–15", 60, "frontal", "elevacao-frontal"], ["Abdominal reverso", "Abdômen", 3, "12", 60, "abdominal"], ["Flexão inclinada no banco", "Peito", 3, "8–12", 60, "flexao-banco", "flexao-banco"], ["Cadeira abdutora", "Quadril", 3, "12", 60, "abdutora", "cadeira-quadril", true], ["Esteira ou caminhada", "Condicionamento", 1, "10 min", 30, "caminhada", "cardio-diario"], ["Supino em pé na polia", "Peito", 3, "8–12", 75, "supino", "supino-polia"]]}];
 const plans = [
   {
-    "title": "A — Full body na sua academia",
+    "title": "A — Full body com aparelhos",
     "items": [
       [
         "Agachamento na V-Squat (de frente)",
@@ -17,31 +17,13 @@ const plans = [
         "agachamento-na-v-squat-de-frente"
       ],
       [
-        "Leg press 45°",
-        "Pernas",
-        3,
-        "10–12",
-        90,
-        "gym",
-        "leg-press-45"
-      ],
-      [
-        "Supino reto com barra",
+        "Supino reto na máquina",
         "Peito",
         3,
         "8–12",
         90,
         "gym",
-        "supino-reto-com-barra"
-      ],
-      [
-        "Crucifixo com halteres",
-        "Peito",
-        3,
-        "10–12",
-        75,
-        "gym",
-        "crucifixo-com-halteres"
+        "supino-reto-na-maquina"
       ],
       [
         "Remada máquina",
@@ -53,22 +35,13 @@ const plans = [
         "remada-maquina"
       ],
       [
-        "Desenvolvimento sentado",
-        "Ombros",
-        3,
-        "8–12",
-        90,
-        "gym",
-        "desenvolvimento-sentado"
-      ],
-      [
-        "Rosca alternada",
+        "Rosca na polia baixa",
         "Bíceps",
         3,
         "10–12",
         60,
         "gym",
-        "rosca-alternada"
+        "rosca-na-polia-baixa"
       ],
       [
         "Tríceps na polia",
@@ -80,13 +53,13 @@ const plans = [
         "triceps-na-polia"
       ],
       [
-        "Abdominal curto",
+        "Abdominal na polia alta",
         "Abdômen",
         3,
         "12",
         60,
         "gym",
-        "abdominal-curto"
+        "abdominal-na-polia-alta"
       ],
       [
         "Esteira ou caminhada",
@@ -100,7 +73,7 @@ const plans = [
     ]
   },
   {
-    "title": "B — Full body na sua academia",
+    "title": "B — Full body com aparelhos",
     "items": [
       [
         "Stiff na V-Squat",
@@ -110,15 +83,6 @@ const plans = [
         90,
         "gym",
         "stiff-na-v-squat"
-      ],
-      [
-        "Cadeira adutora",
-        "Pernas",
-        3,
-        "12",
-        75,
-        "gym",
-        "cadeira-adutora"
       ],
       [
         "Supino inclinado na máquina",
@@ -139,101 +103,6 @@ const plans = [
         "puxada-frontal"
       ],
       [
-        "Remada sentada",
-        "Costas",
-        3,
-        "10–12",
-        90,
-        "gym",
-        "remada-sentada"
-      ],
-      [
-        "Elevação lateral",
-        "Ombros",
-        3,
-        "12",
-        60,
-        "gym",
-        "elevacao-lateral"
-      ],
-      [
-        "Rosca direta com halteres",
-        "Bíceps",
-        3,
-        "10–12",
-        60,
-        "gym",
-        "rosca-direta-com-halteres"
-      ],
-      [
-        "Tríceps corda",
-        "Tríceps",
-        3,
-        "10–12",
-        60,
-        "gym",
-        "triceps-corda"
-      ],
-      [
-        "Prancha",
-        "Abdômen",
-        3,
-        "20–30 s",
-        60,
-        "gym",
-        "prancha"
-      ],
-      [
-        "Esteira ou caminhada",
-        "Condicionamento",
-        1,
-        "10 min",
-        30,
-        "caminhada",
-        "cardio-diario"
-      ]
-    ]
-  },
-  {
-    "title": "C — Full body na sua academia",
-    "items": [
-      [
-        "Leg press unilateral",
-        "Pernas",
-        3,
-        "10–12 por perna",
-        90,
-        "gym",
-        "leg-press-unilateral"
-      ],
-      [
-        "Elevação pélvica na máquina",
-        "Pernas",
-        3,
-        "12",
-        90,
-        "gym",
-        "elevacao-pelvica-na-maquina"
-      ],
-      [
-        "Supino com halteres",
-        "Peito",
-        3,
-        "8–12",
-        90,
-        "gym",
-        "supino-com-halteres"
-      ],
-      [
-        "Remada unilateral",
-        "Costas",
-        3,
-        "10 por braço",
-        75,
-        "gym",
-        "remada-unilateral"
-      ],
-      [
         "Face pull na polia",
         "Ombros",
         3,
@@ -243,31 +112,13 @@ const plans = [
         "face-pull-na-polia"
       ],
       [
-        "Rosca martelo leve",
-        "Bíceps",
+        "Elevação frontal na polia baixa",
+        "Ombros",
         3,
         "12",
         60,
         "gym",
-        "rosca-martelo-leve"
-      ],
-      [
-        "Tríceps testa com halteres",
-        "Tríceps",
-        3,
-        "10–12",
-        60,
-        "gym",
-        "triceps-testa-com-halteres"
-      ],
-      [
-        "Elevação curta de pernas estendidas",
-        "Abdômen",
-        3,
-        "8–12",
-        60,
-        "gym",
-        "elevacao-curta-de-pernas-estendidas"
+        "elevacao-frontal-na-polia-baixa"
       ],
       [
         "Esteira ou caminhada",
@@ -281,43 +132,25 @@ const plans = [
     ]
   },
   {
-    "title": "D — Full body na sua academia",
+    "title": "C — Full body com aparelhos",
     "items": [
       [
-        "Stiff com halteres",
+        "Leg press 45°",
         "Pernas",
         3,
         "10–12",
         90,
         "gym",
-        "stiff-com-halteres"
+        "leg-press-45"
       ],
       [
-        "Cadeira abdutora",
-        "Pernas",
-        3,
-        "12",
-        75,
-        "gym",
-        "cadeira-abdutora"
-      ],
-      [
-        "Supino inclinado com barra",
+        "Supino reto na máquina",
         "Peito",
         3,
         "8–12",
         90,
         "gym",
-        "supino-inclinado-com-barra"
-      ],
-      [
-        "Crucifixo unilateral na polia",
-        "Peito",
-        3,
-        "10–12 por braço",
-        75,
-        "gym",
-        "crucifixo-unilateral-na-polia"
+        "supino-reto-na-maquina"
       ],
       [
         "Puxada com braços estendidos",
@@ -329,40 +162,31 @@ const plans = [
         "puxada-com-bracos-estendidos"
       ],
       [
-        "Crucifixo inverso com halteres",
-        "Ombros",
-        3,
-        "8–12",
-        75,
-        "gym",
-        "crucifixo-inverso-com-halteres"
-      ],
-      [
-        "Rosca direta",
+        "Rosca na polia baixa",
         "Bíceps",
         3,
         "10–12",
         60,
         "gym",
-        "rosca-direta"
+        "rosca-na-polia-baixa"
       ],
       [
-        "Tríceps unilateral na polia",
+        "Tríceps na polia",
         "Tríceps",
         3,
-        "10–12 por braço",
+        "10–12",
         60,
         "gym",
-        "triceps-unilateral-na-polia"
+        "triceps-na-polia"
       ],
       [
-        "Abdominal oblíquo no solo",
+        "Abdominal na polia alta",
         "Abdômen",
         3,
-        "8 por lado",
+        "12",
         60,
         "gym",
-        "abdominal-obliquo-no-solo"
+        "abdominal-na-polia-alta"
       ],
       [
         "Esteira ou caminhada",
@@ -376,61 +200,93 @@ const plans = [
     ]
   },
   {
-    "title": "E — Full body na sua academia",
+    "title": "D — Full body com aparelhos",
     "items": [
       [
-        "Leg press 45° pés próximos",
-        "Pernas",
-        3,
-        "10–12",
-        90,
-        "gym",
-        "leg-press-45-pes-proximos"
-      ],
-      [
-        "Ponte de glúteos",
+        "Cadeira extensora",
         "Pernas",
         3,
         "12",
         75,
         "gym",
-        "ponte-de-gluteos"
+        "cadeira-extensora"
       ],
       [
-        "Supino inclinado com halteres",
+        "Mesa flexora deitada",
+        "Pernas",
+        3,
+        "10–12",
+        75,
+        "gym",
+        "mesa-flexora-deitada"
+      ],
+      [
+        "Supino inclinado na máquina",
         "Peito",
         3,
         "8–12",
         90,
         "gym",
-        "supino-inclinado-com-halteres"
+        "supino-inclinado-na-maquina"
       ],
       [
-        "Puxada frontal pegada fechada",
+        "Remada máquina",
         "Costas",
         3,
         "10–12",
         90,
         "gym",
-        "puxada-frontal-pegada-fechada"
+        "remada-maquina"
       ],
       [
-        "Remada curvada com dois halteres",
-        "Costas",
-        3,
-        "8–12",
-        75,
-        "gym",
-        "remada-curvada-com-dois-halteres"
-      ],
-      [
-        "Elevação frontal com halteres",
+        "Face pull na polia",
         "Ombros",
         3,
         "12",
         60,
         "gym",
-        "elevacao-frontal-com-halteres"
+        "face-pull-na-polia"
+      ],
+      [
+        "Esteira ou caminhada",
+        "Condicionamento",
+        1,
+        "10 min",
+        30,
+        "caminhada",
+        "cardio-diario"
+      ]
+    ]
+  },
+  {
+    "title": "E — Full body com aparelhos",
+    "items": [
+      [
+        "Cadeira adutora",
+        "Pernas",
+        3,
+        "12",
+        75,
+        "gym",
+        "cadeira-adutora"
+      ],
+      [
+        "Supino reto na máquina",
+        "Peito",
+        3,
+        "8–12",
+        90,
+        "gym",
+        "supino-reto-na-maquina"
+      ],
+      [
+        "Puxada frontal",
+        "Costas",
+        3,
+        "10–12",
+        90,
+        "gym",
+        "puxada-frontal"
       ],
       [
         "Rosca na polia baixa",
@@ -442,22 +298,22 @@ const plans = [
         "rosca-na-polia-baixa"
       ],
       [
-        "Tríceps coice com halteres",
+        "Tríceps na polia",
         "Tríceps",
         3,
         "10–12",
         60,
         "gym",
-        "triceps-coice-com-halteres"
+        "triceps-na-polia"
       ],
       [
-        "Abdominal reverso",
+        "Abdominal na polia alta",
         "Abdômen",
         3,
         "12",
         60,
         "gym",
-        "abdominal-reverso"
+        "abdominal-na-polia-alta"
       ],
       [
         "Esteira ou caminhada",
@@ -475,7 +331,36 @@ const gymCatalog = {
   "Agachamento na V-Squat (de frente)": {
     "group": "Pernas",
     "equipment": "V-Squat com apoio nos ombros",
-    "instruction": "Confirme o ajuste e as travas da V-Squat com o instrutor. Agache com os pés apoiados, em amplitude confortável.",
+    "instruction": "Use o aparelho da foto e confirme apoio, travas e amplitude com o instrutor, respeitando a orientação para seu joelho e coluna.",
+    "muscles": [
+      "quadríceps",
+      "glúteos"
+    ],
+    "secondary": [
+      "posterior da coxa"
+    ],
+    "movementFamily": "agachamento-maquina",
+    "primaryMuscle": "quadríceps",
+    "bilateral": true,
+    "equipmentKind": "machine",
+    "target": "10–12",
+    "rest": 90,
+    "picture": null
+  },
+  "Stiff na V-Squat": {
+    "group": "Pernas",
+    "equipment": "V-Squat com apoio nos ombros",
+    "instruction": "Use apenas o ajuste para stiff que já foi orientado presencialmente. Como você relatou problema de coluna, confirme se este movimento está autorizado e não force amplitude.",
+    "muscles": [
+      "posterior da coxa"
+    ],
+    "secondary": [
+      "glúteos"
+    ],
+    "movementFamily": "stiff",
+    "primaryMuscle": "posterior da coxa",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "10–12",
     "rest": 90,
     "picture": null
@@ -483,135 +368,122 @@ const gymCatalog = {
   "Leg press 45°": {
     "group": "Pernas",
     "equipment": "Leg press inclinado 45°",
-    "instruction": "Mantenha o quadril apoiado. Empurre a plataforma sem travar os joelhos e retorne com controle.",
+    "instruction": "Use as duas pernas, com quadril e costas apoiados. Ajuste banco e amplitude com o profissional; não trave os joelhos.",
+    "muscles": [
+      "quadríceps"
+    ],
+    "secondary": [
+      "glúteos"
+    ],
+    "movementFamily": "leg-press",
+    "primaryMuscle": "quadríceps",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "10–12",
     "rest": 90,
     "picture": "Leg_Press"
   },
-  "Stiff na V-Squat": {
+  "Cadeira extensora": {
     "group": "Pernas",
-    "equipment": "V-Squat com apoio nos ombros",
-    "instruction": "Peça ao instrutor o ajuste específico deste aparelho para stiff. Faça o movimento de quadril orientado, com os joelhos levemente flexionados e a coluna estável.",
+    "equipment": "Cadeira extensora — confirmada por você",
+    "instruction": "Faça com as duas pernas. Alinhe o eixo do aparelho ao joelho e ajuste o rolo; carga e amplitude dependem da orientação para seu joelho.",
+    "muscles": [
+      "quadríceps"
+    ],
+    "secondary": [],
+    "movementFamily": "extensao-joelho",
+    "primaryMuscle": "quadríceps",
+    "bilateral": true,
+    "equipmentKind": "machine",
+    "target": "12",
+    "rest": 75,
+    "picture": "Leg_Extensions"
+  },
+  "Mesa flexora deitada": {
+    "group": "Pernas",
+    "equipment": "Mesa flexora — confirmada por você",
+    "instruction": "Faça com as duas pernas. Ajuste o eixo e o rolo com o instrutor; flexione os joelhos com quadril apoiado, sem compensar na lombar.",
+    "muscles": [
+      "posterior da coxa"
+    ],
+    "secondary": [],
+    "movementFamily": "flexao-joelho",
+    "primaryMuscle": "posterior da coxa",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "10–12",
-    "rest": 90,
-    "picture": null
+    "rest": 75,
+    "picture": "Lying_Leg_Curls"
   },
   "Cadeira adutora": {
     "group": "Pernas",
-    "equipment": "Cadeira de adução/abdução",
-    "instruction": "Use a regulagem de fechamento das pernas na cadeira conjugada. Feche e retorne com controle.",
+    "equipment": "Cadeira adutora",
+    "instruction": "Use o ajuste de fechamento das pernas. Confirme uma abertura confortável com o instrutor, mantendo as costas apoiadas.",
+    "muscles": [
+      "adutores da coxa"
+    ],
+    "secondary": [],
+    "movementFamily": "aducao-quadril",
+    "primaryMuscle": "adutores da coxa",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "12",
     "rest": 75,
     "picture": "Thigh_Adductor"
   },
-  "Leg press unilateral": {
-    "group": "Pernas",
-    "equipment": "Leg press inclinado 45°",
-    "instruction": "Confirme o ajuste unilateral e a trava. Mantenha o quadril apoiado e movimente uma perna de cada vez.",
-    "target": "10–12 por perna",
-    "rest": 90,
-    "picture": null
-  },
-  "Elevação pélvica na máquina": {
-    "group": "Pernas",
-    "equipment": "Máquina de elevação pélvica",
-    "instruction": "Ajuste o apoio acolchoado sobre o quadril e as travas com o instrutor. Eleve o quadril com controle, sem arquear a lombar.",
-    "target": "12",
-    "rest": 90,
-    "picture": null
-  },
-  "Stiff com halteres": {
-    "group": "Pernas",
-    "equipment": "Halteres",
-    "instruction": "Com os joelhos levemente flexionados, leve o quadril para trás mantendo a coluna estável. Retorne sem impulso.",
-    "target": "10–12",
-    "rest": 90,
-    "picture": "Stiff-Legged_Dumbbell_Deadlift"
-  },
-  "Cadeira abdutora": {
-    "group": "Pernas",
-    "equipment": "Cadeira de adução/abdução",
-    "instruction": "Use a regulagem de abertura das pernas na cadeira conjugada. Abra e retorne com controle.",
-    "target": "12",
-    "rest": 75,
-    "picture": "Thigh_Abductor"
-  },
-  "Leg press 45° pés próximos": {
-    "group": "Pernas",
-    "equipment": "Leg press inclinado 45°",
-    "instruction": "Ajuste a posição dos pés com o instrutor, mantendo os joelhos alinhados. Retorne sem perder o apoio do quadril.",
-    "target": "10–12",
-    "rest": 90,
-    "picture": "Narrow_Stance_Leg_Press"
-  },
-  "Ponte de glúteos": {
-    "group": "Pernas",
-    "equipment": "Colchonete",
-    "instruction": "Deite de costas com joelhos flexionados e pés no chão. Eleve o quadril com controle e retorne.",
-    "target": "12",
-    "rest": 75,
-    "picture": "Butt_Lift_Bridge"
-  },
-  "Supino reto com barra": {
+  "Supino reto na máquina": {
     "group": "Peito",
-    "equipment": "Banco de supino reto e barra",
-    "instruction": "Ajuste a altura da barra e peça auxílio na retirada quando necessário. Desça a barra com controle, mantendo os ombros apoiados.",
+    "equipment": "Máquina de supino reto — confirmada por você",
+    "instruction": "Ajuste banco e pegadores com o instrutor. Empurre com os dois braços, mantendo as costas apoiadas.",
+    "muscles": [
+      "peitoral"
+    ],
+    "secondary": [
+      "tríceps",
+      "deltoide anterior"
+    ],
+    "movementFamily": "supino-horizontal",
+    "primaryMuscle": "peitoral",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "8–12",
     "rest": 90,
-    "picture": "Barbell_Bench_Press_-_Medium_Grip"
-  },
-  "Crucifixo com halteres": {
-    "group": "Peito",
-    "equipment": "Banco reto e halteres",
-    "instruction": "No banco, abra os braços com cotovelos levemente flexionados e aproxime os halteres sem forçar os ombros.",
-    "target": "10–12",
-    "rest": 75,
-    "picture": "Dumbbell_Flyes"
+    "picture": "Machine_Bench_Press"
   },
   "Supino inclinado na máquina": {
     "group": "Peito",
     "equipment": "Supino inclinado articulado",
-    "instruction": "Ajuste o banco para os pegadores ficarem na linha adequada do peito. Empurre sem elevar os ombros e retorne com controle.",
+    "instruction": "Use os dois braços ao mesmo tempo, com costas apoiadas e o banco ajustado à linha dos pegadores.",
+    "muscles": [
+      "peitoral"
+    ],
+    "secondary": [
+      "tríceps",
+      "deltoide anterior"
+    ],
+    "movementFamily": "supino-inclinado",
+    "primaryMuscle": "peitoral",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "8–12",
     "rest": 90,
     "picture": "Leverage_Incline_Chest_Press"
   },
-  "Supino com halteres": {
-    "group": "Peito",
-    "equipment": "Banco reto e halteres",
-    "instruction": "Deitado no banco reto, mantenha os ombros apoiados e empurre os halteres com controle.",
-    "target": "8–12",
-    "rest": 90,
-    "picture": "Dumbbell_Bench_Press"
-  },
-  "Supino inclinado com barra": {
-    "group": "Peito",
-    "equipment": "Banco de supino inclinado e barra",
-    "instruction": "Ajuste a altura dos suportes e peça auxílio quando necessário. Desça e empurre a barra com controle.",
-    "target": "8–12",
-    "rest": 90,
-    "picture": "Barbell_Incline_Bench_Press_-_Medium_Grip"
-  },
-  "Crucifixo unilateral na polia": {
-    "group": "Peito",
-    "equipment": "Polia com pegador",
-    "instruction": "Use uma única polia. Aproxime um braço à frente do peito com o cotovelo levemente flexionado e retorne devagar.",
-    "target": "10–12 por braço",
-    "rest": 75,
-    "picture": "Single-Arm_Cable_Crossover"
-  },
-  "Supino inclinado com halteres": {
-    "group": "Peito",
-    "equipment": "Banco inclinado e halteres",
-    "instruction": "Mantenha os ombros apoiados no banco inclinado, empurre os halteres e retorne devagar.",
-    "target": "8–12",
-    "rest": 90,
-    "picture": "Incline_Dumbbell_Press"
-  },
   "Remada máquina": {
     "group": "Costas",
     "equipment": "Remada articulada com apoio no peito",
-    "instruction": "Ajuste o apoio do peito e o assento. Puxe os pegadores levando os cotovelos para trás sem balançar o tronco.",
+    "instruction": "Use os dois braços ao mesmo tempo e mantenha o peito no apoio. Ajuste o banco para não compensar com a coluna.",
+    "muscles": [
+      "dorsais"
+    ],
+    "secondary": [
+      "romboides",
+      "bíceps"
+    ],
+    "movementFamily": "remada-horizontal",
+    "primaryMuscle": "dorsais",
+    "bilateral": true,
+    "equipmentKind": "machine",
     "target": "10–12",
     "rest": 90,
     "picture": "Leverage_Iso_Row"
@@ -619,127 +491,88 @@ const gymCatalog = {
   "Puxada frontal": {
     "group": "Costas",
     "equipment": "Polia alta e barra",
-    "instruction": "Puxe a barra à frente do peito com o tronco estável. Retorne com controle.",
+    "instruction": "Puxe com os dois braços à frente do peito, com o tronco estável, sem jogar o corpo para trás.",
+    "muscles": [
+      "dorsais"
+    ],
+    "secondary": [
+      "bíceps"
+    ],
+    "movementFamily": "puxada-vertical",
+    "primaryMuscle": "dorsais",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "10–12",
     "rest": 90,
     "picture": "Wide-Grip_Lat_Pulldown"
   },
-  "Remada sentada": {
-    "group": "Costas",
-    "equipment": "Polia baixa e pegador",
-    "instruction": "Sente com os pés apoiados, puxe o pegador na direção do tronco e retorne sem arredondar a coluna.",
-    "target": "10–12",
-    "rest": 90,
-    "picture": "Seated_Cable_Rows"
-  },
-  "Remada unilateral": {
-    "group": "Costas",
-    "equipment": "Banco e halter",
-    "instruction": "Apoie-se no banco e puxe um halter com o cotovelo para trás, mantendo o tronco estável.",
-    "target": "10 por braço",
-    "rest": 75,
-    "picture": "One-Arm_Dumbbell_Row"
-  },
   "Puxada com braços estendidos": {
     "group": "Costas",
-    "equipment": "Polia alta",
-    "instruction": "Na polia alta, leve a barra à frente das coxas com os cotovelos levemente flexionados, sem impulso.",
+    "equipment": "Polia alta e barra",
+    "instruction": "Leve a barra à frente das coxas com os dois braços, cotovelos levemente flexionados e tronco estável.",
+    "muscles": [
+      "dorsais"
+    ],
+    "secondary": [
+      "redondo maior"
+    ],
+    "movementFamily": "extensao-ombro-polia",
+    "primaryMuscle": "dorsais",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "10–12",
     "rest": 75,
     "picture": "Straight-Arm_Pulldown"
   },
-  "Puxada frontal pegada fechada": {
-    "group": "Costas",
-    "equipment": "Polia alta e pegador fechado",
-    "instruction": "Use o pegador fechado da polia alta e puxe à frente do peito, mantendo os ombros estáveis.",
-    "target": "10–12",
-    "rest": 90,
-    "picture": "Close-Grip_Front_Lat_Pulldown"
-  },
-  "Remada curvada com dois halteres": {
-    "group": "Costas",
-    "equipment": "Halteres",
-    "instruction": "Incline o tronco com coluna estável e joelhos levemente flexionados. Puxe os dois halteres com controle.",
-    "target": "8–12",
-    "rest": 75,
-    "picture": "Bent_Over_Two-Dumbbell_Row"
-  },
-  "Desenvolvimento sentado": {
-    "group": "Ombros",
-    "equipment": "Banco com encosto e halteres",
-    "instruction": "Sente com as costas apoiadas e empurre os halteres para cima sem arquear a lombar.",
-    "target": "8–12",
-    "rest": 90,
-    "picture": "Dumbbell_Shoulder_Press"
-  },
-  "Elevação lateral": {
-    "group": "Ombros",
-    "equipment": "Halteres",
-    "instruction": "Eleve os braços para os lados até uma altura confortável e retorne sem impulso.",
-    "target": "12",
-    "rest": 60,
-    "picture": "Side_Lateral_Raise"
-  },
   "Face pull na polia": {
     "group": "Ombros",
     "equipment": "Polia alta e corda",
-    "instruction": "Puxe a corda na direção do rosto sem elevar os ombros e retorne devagar.",
+    "instruction": "Puxe a corda com os dois braços em direção ao rosto, sem arquear a lombar ou elevar os ombros.",
+    "muscles": [
+      "deltoide posterior"
+    ],
+    "secondary": [
+      "romboides",
+      "trapézio"
+    ],
+    "movementFamily": "face-pull",
+    "primaryMuscle": "deltoide posterior",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "12",
     "rest": 60,
     "picture": "Face_Pull"
   },
-  "Crucifixo inverso com halteres": {
+  "Elevação frontal na polia baixa": {
     "group": "Ombros",
-    "equipment": "Halteres",
-    "instruction": "Incline o tronco com a coluna estável e abra os braços com cotovelos levemente flexionados.",
-    "target": "8–12",
-    "rest": 75,
-    "picture": "Reverse_Flyes"
-  },
-  "Elevação frontal com halteres": {
-    "group": "Ombros",
-    "equipment": "Halteres",
-    "instruction": "Eleve os halteres à frente em amplitude confortável e retorne sem balançar o tronco.",
+    "equipment": "Polia baixa e barra",
+    "instruction": "Faça com os dois braços segurando a barra, sem impulso. Confirme a amplitude para o ombro e mantenha o tronco estável.",
+    "muscles": [
+      "deltoide anterior"
+    ],
+    "secondary": [],
+    "movementFamily": "elevacao-frontal",
+    "primaryMuscle": "deltoide anterior",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "12",
     "rest": 60,
-    "picture": "Front_Dumbbell_Raise"
-  },
-  "Rosca alternada": {
-    "group": "Bíceps",
-    "equipment": "Halteres",
-    "instruction": "Flexione um cotovelo de cada vez sem balançar o tronco.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Dumbbell_Alternate_Bicep_Curl"
-  },
-  "Rosca direta com halteres": {
-    "group": "Bíceps",
-    "equipment": "Halteres",
-    "instruction": "Flexione os cotovelos com os dois halteres e retorne lentamente, sem impulso.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Dumbbell_Bicep_Curl"
-  },
-  "Rosca martelo leve": {
-    "group": "Bíceps",
-    "equipment": "Halteres",
-    "instruction": "Com as palmas voltadas uma para a outra, flexione os cotovelos com controle.",
-    "target": "12",
-    "rest": 60,
-    "picture": "Alternate_Hammer_Curl"
-  },
-  "Rosca direta": {
-    "group": "Bíceps",
-    "equipment": "Barra e anilhas",
-    "instruction": "Flexione os cotovelos segurando a barra sem balançar o tronco e retorne devagar.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Barbell_Curl"
+    "picture": null
   },
   "Rosca na polia baixa": {
     "group": "Bíceps",
     "equipment": "Polia baixa e barra",
-    "instruction": "Mantenha os cotovelos próximos ao tronco, flexione-os e retorne com controle.",
+    "instruction": "Faça com os dois braços ao mesmo tempo. Mantenha os cotovelos próximos ao tronco, sem balançar o corpo.",
+    "muscles": [
+      "bíceps"
+    ],
+    "secondary": [
+      "braquial"
+    ],
+    "movementFamily": "rosca-bilateral",
+    "primaryMuscle": "bíceps",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "10–12",
     "rest": 60,
     "picture": "Standing_Biceps_Cable_Curl"
@@ -747,207 +580,72 @@ const gymCatalog = {
   "Tríceps na polia": {
     "group": "Tríceps",
     "equipment": "Polia alta e barra",
-    "instruction": "Estenda os cotovelos mantendo os braços próximos ao tronco e retorne devagar.",
+    "instruction": "Faça com os dois braços ao mesmo tempo. Estenda os cotovelos mantendo os braços junto ao tronco.",
+    "muscles": [
+      "tríceps"
+    ],
+    "secondary": [],
+    "movementFamily": "triceps-polia",
+    "primaryMuscle": "tríceps",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "10–12",
     "rest": 60,
     "picture": "Triceps_Pushdown"
   },
-  "Tríceps corda": {
-    "group": "Tríceps",
-    "equipment": "Polia alta e corda",
-    "instruction": "Estenda os cotovelos segurando a corda, sem balançar o tronco.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Triceps_Pushdown_-_Rope_Attachment"
-  },
-  "Tríceps testa com halteres": {
-    "group": "Tríceps",
-    "equipment": "Banco reto e halteres",
-    "instruction": "Deitado no banco, flexione e estenda os cotovelos com os braços estáveis e sem aproximar os pesos do rosto.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Lying_Dumbbell_Tricep_Extension"
-  },
-  "Tríceps unilateral na polia": {
-    "group": "Tríceps",
-    "equipment": "Polia alta e pegador",
-    "instruction": "Estenda um cotovelo de cada vez mantendo o braço junto ao tronco.",
-    "target": "10–12 por braço",
-    "rest": 60,
-    "picture": null
-  },
-  "Tríceps coice com halteres": {
-    "group": "Tríceps",
-    "equipment": "Banco e halteres",
-    "instruction": "Com o tronco apoiado e o braço estável ao lado do corpo, estenda o cotovelo e retorne sem impulso.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Tricep_Dumbbell_Kickback"
-  },
-  "Abdominal curto": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "Deite de costas com os joelhos flexionados e eleve levemente o tronco, sem puxar o pescoço.",
-    "target": "12",
-    "rest": 60,
-    "picture": "Crunches"
-  },
-  "Prancha": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "Apoie os antebraços e mantenha o tronco alinhado, respirando normalmente.",
-    "target": "20–30 s",
-    "rest": 60,
-    "picture": "Plank"
-  },
-  "Elevação curta de pernas estendidas": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "Deite de costas e eleve pouco as pernas estendidas, mantendo a lombar apoiada. Retorne devagar.",
-    "target": "8–12",
-    "rest": 60,
-    "picture": null
-  },
-  "Abdominal oblíquo no solo": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "Deitado, faça uma elevação curta com rotação suave do tronco, sem puxar o pescoço.",
-    "target": "8 por lado",
-    "rest": 60,
-    "picture": "Oblique_Crunches_-_On_The_Floor"
-  },
-  "Abdominal reverso": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "Deite de costas com joelhos flexionados e aproxime o quadril do tronco com controle, sem embalo.",
-    "target": "12",
-    "rest": 60,
-    "picture": "Reverse_Crunch"
-  },
-  "Supino no chão com halteres": {
-    "group": "Peito",
-    "equipment": "Halteres e colchonete",
-    "instruction": "Deite no colchonete e empurre os halteres, controlando o contato dos braços com o solo.",
-    "target": "8–12",
-    "rest": 90,
-    "picture": "Dumbbell_Floor_Press"
-  },
-  "Supino em pé na polia": {
-    "group": "Peito",
-    "equipment": "Polia e pegador",
-    "instruction": "Estabilize o tronco e empurre o pegador à frente do peito, sem girar o corpo.",
-    "target": "8–12",
-    "rest": 75,
-    "picture": "Standing_Cable_Chest_Press"
-  },
-  "Remada na polia unilateral": {
-    "group": "Costas",
-    "equipment": "Polia baixa e pegador",
-    "instruction": "Puxe um pegador de cada vez com o tronco estável e retorne com controle.",
-    "target": "10 por braço",
-    "rest": 75,
-    "picture": "Seated_One-arm_Cable_Pulley_Rows"
-  },
-  "Pullover com halter": {
-    "group": "Costas",
-    "equipment": "Banco reto e halter",
-    "instruction": "No banco, leve o halter para trás da cabeça em amplitude confortável, mantendo o tronco apoiado.",
-    "target": "8–12",
-    "rest": 75,
-    "picture": "Bent-Arm_Dumbbell_Pullover"
-  },
-  "Elevação lateral sentada": {
-    "group": "Ombros",
-    "equipment": "Banco e halteres",
-    "instruction": "Sentado, eleve os braços lateralmente e retorne sem impulso.",
-    "target": "12",
-    "rest": 60,
-    "picture": "Seated_Side_Lateral_Raise"
-  },
-  "Rosca martelo cruzada": {
-    "group": "Bíceps",
-    "equipment": "Halteres",
-    "instruction": "Com a pegada neutra, leve um halter em direção ao lado oposto do peito sem balançar o tronco.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Cross_Body_Hammer_Curl"
-  },
-  "Rosca unilateral na polia": {
-    "group": "Bíceps",
-    "equipment": "Polia baixa e pegador",
-    "instruction": "Flexione um cotovelo de cada vez, mantendo o braço próximo ao tronco.",
-    "target": "10 por braço",
-    "rest": 60,
-    "picture": "Standing_One-Arm_Cable_Curl"
-  },
   "Tríceps acima da cabeça com corda": {
     "group": "Tríceps",
     "equipment": "Polia e corda",
-    "instruction": "Estenda os cotovelos com os braços acima da cabeça e o tronco estável.",
+    "instruction": "Confirme se a posição acima da cabeça está confortável e autorizada para você. Use os dois braços sem arquear a coluna.",
+    "muscles": [
+      "tríceps"
+    ],
+    "secondary": [],
+    "movementFamily": "triceps-acima-cabeca",
+    "primaryMuscle": "tríceps",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "10–12",
     "rest": 60,
     "picture": "Triceps_Overhead_Extension_with_Rope"
   },
-  "Tríceps francês sentado": {
-    "group": "Tríceps",
-    "equipment": "Banco com encosto e halter",
-    "instruction": "Sentado com apoio, flexione e estenda os cotovelos com o halter acima da cabeça, sem arquear a lombar.",
-    "target": "10–12",
-    "rest": 60,
-    "picture": "Seated_Triceps_Press"
-  },
-  "Prancha lateral": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "De lado, apoie o antebraço e mantenha o tronco alinhado, respirando normalmente.",
-    "target": "20–30 s",
-    "rest": 60,
-    "picture": "Side_Bridge"
-  },
-  "Abdominal com braços estendidos": {
-    "group": "Abdômen",
-    "equipment": "Colchonete",
-    "instruction": "Deite de costas com joelhos flexionados e braços acima da cabeça. Eleve levemente o tronco sem impulso.",
-    "target": "12",
-    "rest": 60,
-    "picture": "Crunch_-_Hands_Overhead"
-  },
   "Abdominal na polia alta": {
     "group": "Abdômen",
     "equipment": "Polia alta e corda",
-    "instruction": "Ajoelhe abaixo da polia e flexione o tronco com controle, sem puxar com os braços.",
+    "instruction": "Como você relatou problema de coluna, faça este movimento somente se tiver sido orientado e autorizado presencialmente. Não force flexão da coluna nem trabalhe com dor.",
+    "muscles": [
+      "abdômen"
+    ],
+    "secondary": [],
+    "movementFamily": "flexao-tronco-polia",
+    "primaryMuscle": "abdômen",
+    "bilateral": true,
+    "equipmentKind": "cable",
     "target": "12",
     "rest": 60,
     "picture": "Cable_Crunch"
-  },
-  "Ponte unilateral": {
-    "group": "Pernas",
-    "equipment": "Colchonete",
-    "instruction": "Deitado, eleve o quadril com um pé apoiado e retorne com controle, alternando as pernas.",
-    "target": "12 por perna",
-    "rest": 75,
-    "picture": "Single_Leg_Glute_Bridge"
   }
 };
 const alternatives={};
 const replacementMetadata=gymCatalog;
 function exerciseGroup(item){return item[1]}
 for(const plan of plans)for(const item of plan.items){
-    if(item[1]!=='Condicionamento')alternatives[item[0]]=Object.keys(gymCatalog).filter(name=>name!==item[0]&&gymCatalog[name].group===item[1]);
+    if(item[1]!=='Condicionamento')alternatives[item[0]]=Object.keys(gymCatalog).filter(name=>name!==item[0]&&gymCatalog[name].primaryMuscle===gymCatalog[item[0]].primaryMuscle&&gymCatalog[name].bilateral);
 }
 function slotKeyAt(planIndex,index){return 'academia-20261124-'+planIndex+'-'+plans[planIndex].items[index][6]}
+function movementKey(name){return gymCatalog[name]?.movementFamily||normalizedExerciseName(name)}
 function normalizedExerciseName(name) {return name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim()}
 function selectedWeekExercises() {
     const selected=new Map();
     // Reserve even the original movements. A replacement must not be an
     // exercise already present anywhere in the five-day base schedule.
-    const used=new Set(plans.flatMap(plan=>plan.items.filter(item=>item[1]!=='Condicionamento').map(item=>normalizedExerciseName(item[0]))));
+    const used=new Set(plans.flatMap(plan=>plan.items.filter(item=>item[1]!=='Condicionamento').map(item=>movementKey(item[0]))));
     for (let planIndex=0;planIndex<plans.length;planIndex++) {
         plans[planIndex].items.forEach((item,index)=>{
             const id=slotKeyAt(planIndex,index), candidate=db.swaps[id];
-            if (candidate && alternatives[item[0]]?.includes(candidate) && !used.has(normalizedExerciseName(candidate))) {
+            if (candidate && alternatives[item[0]]?.includes(candidate) && !used.has(movementKey(candidate))) {
                 selected.set(id,candidate);
-                used.add(normalizedExerciseName(candidate));
+                used.add(movementKey(candidate));
             } else selected.set(id,item[0]);
         });
     }
@@ -955,9 +653,9 @@ function selectedWeekExercises() {
 }
 function availableReplacements(index) {
     const item=plans[day].items[index],id=slotKey(index),selected=selectedWeekExercises();
-    const used=new Set(plans.flatMap(plan=>plan.items.filter(e=>e[1]!=='Condicionamento').map(e=>normalizedExerciseName(e[0]))));
-    for (const [other,name] of selected) if(other!==id) used.add(normalizedExerciseName(name));
-    return (alternatives[item[0]]||[]).filter(name=>!used.has(normalizedExerciseName(name)));
+    const used=new Set(plans.flatMap(plan=>plan.items.filter(e=>e[1]!=='Condicionamento').map(e=>movementKey(e[0]))));
+    for (const [other,name] of selected) if(other!==id) used.add(movementKey(name));
+    return (alternatives[item[0]]||[]).filter(name=>!used.has(movementKey(name)));
 }
 function exerciseNameHTML(index){
     const item=plans[day].items[index],name=selectedExercise(index);
@@ -968,7 +666,7 @@ let pickerIndex=-1;
 function openExercisePicker(index){
     pickerIndex=index;
     const item=plans[day].items[index],selected=selectedExercise(index);
-    const names=[item[0],...availableReplacements(index)];
+    const names=[...new Set([item[0],selected,...availableReplacements(index)])];
     document.getElementById('picker-title').textContent='Trocar exercício';
     document.getElementById('picker-group').textContent='Treino '+'ABCDE'[day]+' • '+item[1];
     document.getElementById('picker-options').innerHTML=names.map(name=>`<button type="button" class="picker-option ${selected===name?'chosen':''}" ${selected===name?'aria-current="true"':''} data-choice="${esc(name)}"><strong>${esc(name)} ${selected===name?'✓':''}</strong><small>${esc(gymCatalog[name]?.equipment||'')}</small></button>`).join('');
@@ -1017,6 +715,19 @@ function migrateGymRecords(){
     });
     db.gymLayoutVersion='20261124';save();
 }
+function repetitionDays(name){
+    const family=movementKey(name),selected=selectedWeekExercises();
+    return plans.flatMap((plan,d)=>plan.items.some((item,i)=>item[1]!=='Condicionamento'&&movementKey(selected.get(slotKeyAt(d,i)))===family)?['Seg','Ter','Qua','Qui','Sex'][d]:[]);
+}
+function repetitionHTML(name){
+    const days=repetitionDays(name);
+    return days.length>1?`<small class="exercise-meta">Mesmo movimento na semana: ${days.join(', ')}</small>`:'';
+}
+function musclesHTML(name){
+    const e=gymCatalog[name];
+    if(!e)return '';
+    return `<p class="tiny"><b>Principais:</b> ${esc(e.muscles.join(', '))}.${e.secondary.length?' <b>Também participam:</b> '+esc(e.secondary.join(', '))+'.':''}</p>`;
+}
 function workoutBlocksHTML(plan){
     let previous='';
     return plan.items.map((item,index)=>{
@@ -1037,10 +748,10 @@ function getProgress(){
 }
 function markSet(i,s,checked){let k=entryKey(i),arr=db.completed[k]||[];arr[s]=checked;db.completed[k]=arr;save();let el=document.getElementById('sc'+i);if(el)el.textContent=completedSetCount(i)+'/'+plans[day].items[i][2]+' séries marcadas';let p=getProgress(),out=document.getElementById('setsProgress');if(out)out.textContent=p.done+'/'+p.t+' séries marcadas';let b=document.getElementById('progressBar');if(b)b.style.width=(p.t?100*p.done/p.t:0)+'%'}
 function setEntry(i,which,value){let k=entryKey(i);db.entries[k]=Object.assign({},db.entries[k]||{},{[which]:value});save()}
-function render(){document.getElementById('tabs').innerHTML=[['treino','Treino'],['diario','Diário'],['cardio','Cardio'],['historico','Histórico']].map(([k,v])=>`<button class="${tab===k?'active':''}" onclick="tab='${k}';render()">${v}</button>`).join('');let a=document.getElementById('app');if(tab==='treino'){let p=plans[day],progress=getProgress();a.innerHTML=`<section class="card"><b>Calendário semanal</b><p class="muted tiny">Ciclo ${db.cycle} • Semana ${weekNo()}/8</p><div class="days">${['Seg A','Ter B','Qua C','Qui D','Sex E'].map((x,i)=>`<button class="${i===day?'active':''}" onclick="day=${i};render()"><strong>${x.slice(-1)}</strong><span>${x.slice(0,3)}</span></button>`).join('')}</div></section>${renewalHTML()}<section class="card overview"><h2>Treino ${p.title}</h2><small>Objetivo: emagrecimento e definição</small><div class="progress"><span id="progressBar" style="width:${progress.t?100*progress.done/progress.t:0}%"></span></div><small id="setsProgress">${progress.done}/${progress.t} séries marcadas</small></section><p class="muted tiny">Carga leve a moderada, sem esforço máximo. Interrompa se houver tontura, tremores, suor frio, dor intensa ou formigamento. Se usa medicamentos para diabetes, acompanhe a glicemia conforme orientação profissional.</p>${workoutBlocksHTML(p)}<button class="primary" style="width:100%" onclick="finish()">Concluir treino e salvar</button><details class="card"><summary>Créditos das imagens</summary><p class="tiny">Fotos de exercícios: Free Exercise DB (domínio público, Unlicense). </p></details>`;}
+function render(){document.getElementById('tabs').innerHTML=[['treino','Treino'],['diario','Diário'],['cardio','Cardio'],['historico','Evolução']].map(([k,v])=>`<button class="${tab===k?'active':''}" onclick="tab='${k}';render()">${v}</button>`).join('');let a=document.getElementById('app');if(tab==='treino'){let p=plans[day],progress=getProgress();a.innerHTML=`<section class="card"><b>Calendário semanal</b><p class="muted tiny">Ciclo ${db.cycle} • Semana ${weekNo()}/8</p><div class="days">${['Seg A','Ter B','Qua C','Qui D','Sex E'].map((x,i)=>`<button class="${i===day?'active':''}" onclick="day=${i};render()"><strong>${x.slice(-1)}</strong><span>${x.slice(0,3)}</span></button>`).join('')}</div></section>${renewalHTML()}<section class="card overview"><h2>Treino ${p.title}</h2><small>Objetivo: emagrecimento e definição</small><p class="tiny muted">Prioridade: aparelhos e execução bilateral. Alguns movimentos se repetem nos dias indicados para manter o full body com os equipamentos confirmados.</p><div class="progress"><span id="progressBar" style="width:${progress.t?100*progress.done/progress.t:0}%"></span></div><small id="setsProgress">${progress.done}/${progress.t} séries marcadas</small></section><p class="muted tiny">Coluna e joelho: valide seleção, carga e amplitude com seu médico/fisioterapeuta e instrutor. Máquina não dispensa esse ajuste. Não faça movimentos com dor. Carga sem esforço máximo. Interrompa se houver tontura, tremores, suor frio, dor intensa ou formigamento. Se usa medicamentos para diabetes, acompanhe a glicemia conforme orientação profissional.</p>${workoutBlocksHTML(p)}<button class="primary" style="width:100%" onclick="finish()">Concluir treino e salvar</button><details class="card"><summary>Créditos das imagens</summary><p class="tiny">Fotos de exercícios: Free Exercise DB (domínio público, Unlicense). </p></details>`;}
 else if(tab==='diario')a.innerHTML=`<h2>Diário de treino e recuperação</h2><section class="card"><label>Treino</label><select id="dw">${plans.map((_,i)=>`<option value="${i}">${'ABCDE'[i]}</option>`)}</select><label>Como me senti?</label><textarea id="note" placeholder="Ex.: dor nas coxas, cansaço maior, formigamento..."></textarea><label>Região dolorida</label><input id="region" placeholder="Ex.: coxas"><label>Dor (0 a 10)</label><input type="number" min="0" max="10" id="pain" value="0"><label>Cansaço (0 a 10)</label><input type="number" min="0" max="10" id="fatigue" value="0"><label><input type="checkbox" id="tingle" style="width:auto"> Formigamento</label><button class="primary" onclick="addDiary()">Salvar anotação</button></section>${db.diary.map(x=>`<div class="card"><b>${x.date} • Treino ${x.workout}</b><p>${esc(x.note)}</p><small>Região: ${esc(x.region)} • Dor ${x.pain}/10 • Cansaço ${x.fatigue}/10 ${x.tingle?'• Formigamento':''}</small></div>`).join('')}`;
 else if(tab==='cardio')a.innerHTML=`<h2>Caminhada e corrida</h2><section class="card"><label>Atividade</label><select id="activity"><option>Caminhada</option><option>Esteira</option><option>Corrida</option><option>Bicicleta</option><option>Elíptico</option></select><div id="clock">${fmt(seconds)}</div><div class="row"><button onclick="startClock('Cardio')">Iniciar / Retomar</button><button onclick="pauseClock()">Pausar</button><button onclick="resetClock()">Zerar</button></div><label>Distância (km, preenchimento manual)</label><input id="distance" type="number" min="0" step="0.01" placeholder="Ex.: 2.5"><button class="primary" onclick="addCardio()">Salvar atividade</button><small>Distância automática por GPS não está disponível nesta versão.</small></section>${db.cardio.map(x=>`<div class="card">${x.date} • ${esc(x.kind)} • ${x.time} • ${x.km} km</div>`).join('')}`;
-else a.innerHTML=`<h2>Histórico e ciclos</h2>${renewalHTML()}<section class="card"><b>Ciclo ${db.cycle}</b><p>Início: ${db.start}</p><p>${db.logs.filter(x=>x.cycle===db.cycle).length} treinos concluídos neste ciclo.</p><button onclick="newCycle()">Encerrar ciclo e iniciar semana 1</button><small>O reinício não apaga os resultados anteriores. Confirme apenas depois de completar as oito semanas.</small></section>${progressionHTML()}${db.logs.map(x=>`<div class="card"><b>${x.date} • Ciclo ${x.cycle} • Semana ${x.week||"-"} • Treino ${x.workout}</b><p>${x.done??"-"}/${x.total??"-"} séries concluídas</p><p>${x.items.map(y=>`${esc(y.name)}: ${y.sets} séries, ${y.reps} reps, ${y.kg} kg`).join('<br>')}</p></div>`).join('')}`;
+else a.innerHTML=`<h2>Evolução e histórico</h2>${renewalHTML()}<section class="card"><b>Ciclo ${db.cycle}</b><p>Início: ${db.start}</p><p>${db.logs.filter(x=>x.cycle===db.cycle).length} treinos concluídos neste ciclo.</p><button onclick="newCycle()">Encerrar ciclo e iniciar semana 1</button><small>O reinício não apaga os resultados anteriores. Confirme apenas depois de completar as oito semanas.</small></section>${progressionHTML()}${db.logs.map(x=>`<div class="card"><b>${x.date} • Ciclo ${x.cycle} • Semana ${x.week||"-"} • Treino ${x.workout}</b><p>${x.done??"-"}/${x.total??"-"} séries concluídas</p><p>${x.items.map(y=>`${esc(y.name)}: ${y.sets} séries, ${y.reps} reps, ${y.kg} kg`).join('<br>')}</p></div>`).join('')}`;
 }
 function exerciseTarget(item,name) {
     if (name===item[0]) return item[3];
@@ -1054,9 +765,9 @@ function exerciseTarget(item,name) {
 function exercise(e,i){let id=slotKey(i), name=selectedExercise(i),target=exerciseTarget(e,name),k=entryKey(i),values=db.entries[k]||{},checked=db.completed[k]||[],photos=exerciseImages[name]||[],clockId=k.replaceAll(':','-');
     return `<details class="card exercise-card" ${expandedExercises.has(id)?'open':''} ontoggle="this.open?expandedExercises.add('${id}'):expandedExercises.delete('${id}')"><summary>
     ${photos.length?`<img class="exercise-thumb" loading="lazy" src="images/${photos[0]}" alt="">`:'<span class="exercise-thumb no-thumb">Sem foto<br>específica</span>'}
-    <span><span class="exercise-group">${e[1]}</span>${exerciseNameHTML(i)}${e[7]?'<small class="exercise-meta">Opcional</small>':''}<small class="exercise-meta">${e[2]} séries × ${target} · ${e[4]} s de descanso</small><small id="sc${i}" class="exercise-meta">${completedSetCount(i)}/${e[2]} séries marcadas</small><small class="exercise-meta">Ver séries e cronômetros ⌄</small></span>
+    <span><span class="exercise-group">${esc(gymCatalog[name]?.muscles.join(' • ')||e[1])}</span>${exerciseNameHTML(i)}${repetitionHTML(name)}${e[7]?'<small class="exercise-meta">Opcional</small>':''}<small class="exercise-meta">${e[2]} séries × ${target} · ${e[4]} s de descanso</small><small id="sc${i}" class="exercise-meta">${completedSetCount(i)}/${e[2]} séries marcadas</small><small class="exercise-meta">Ver séries e cronômetros ⌄</small></span>
     </summary><div class="exercise-clocks">${exerciseClockHTML(clockId,'execution',executionDuration(target))}${exerciseClockHTML(clockId,'rest',e[4])}</div>
-    ${exercisePictures(photos,name)}<p class="tiny muted">${esc(gymCatalog[name]?.equipment||'Esteira')}</p><p class="tiny">${esc(selectedInstruction(e,name))}</p><p><button type="button" class="exercise-history" onclick="showExerciseProgress(${i})">Ver evolução</button></p><div class="sets">${Array.from({length:e[2]},(_,s)=>`<label><input type="checkbox" ${checked[s]?'checked':''} onchange="markSet(${i},${s},this.checked)">Série ${s+1}</label>`).join('')}</div><div class="row"><label>Séries<input id="s${i}" type="number" min="0" value="${esc(values.sets??e[2])}" oninput="setEntry(${i},'sets',this.value)"></label><label>${/ (?:s|min)$/.test(target)?'Tempo':'Reps'}<input id="r${i}" type="number" min="0" value="${esc(values.reps??parseInt(target)??10)}" oninput="setEntry(${i},'reps',this.value)"></label><label>Kg<input id="k${i}" type="number" min="0" step="0.5" value="${esc(values.kg??0)}" oninput="setEntry(${i},'kg',this.value)"></label></div></details>`}
+    ${exercisePictures(photos,name)}${musclesHTML(name)}<p class="tiny muted">${esc(gymCatalog[name]?.equipment||'Esteira')}</p><p class="tiny">${esc(selectedInstruction(e,name))}</p><p><button type="button" class="exercise-history" onclick="showExerciseProgress(${i})">Ver evolução</button></p><div class="sets">${Array.from({length:e[2]},(_,s)=>`<label><input type="checkbox" ${checked[s]?'checked':''} onchange="markSet(${i},${s},this.checked)">Série ${s+1}</label>`).join('')}</div><div class="row"><label>Séries<input id="s${i}" type="number" min="0" value="${esc(values.sets??e[2])}" oninput="setEntry(${i},'sets',this.value)"></label><label>${/ (?:s|min)$/.test(target)?'Tempo':'Reps'}<input id="r${i}" type="number" min="0" value="${esc(values.reps??parseInt(target)??10)}" oninput="setEntry(${i},'reps',this.value)"></label><label>Kg<input id="k${i}" type="number" min="0" step="0.5" value="${esc(values.kg??'')}" oninput="setEntry(${i},'kg',this.value)"></label></div></details>`}
 function fmt(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function updateClock(){const clock=document.getElementById('clock');if(clock)clock.textContent=fmt(seconds)}
 function startClock(){if(running)return;running=true;lastTick=Date.now();timer=setInterval(()=>{const elapsed=Math.floor((Date.now()-lastTick)/1000);if(elapsed>0){seconds+=elapsed;lastTick+=elapsed*1000;updateClock()}},250)}
@@ -1077,6 +788,6 @@ function swapExercise(id,value){
     }
     if(value)db.swaps[id]=value;else delete db.swaps[id];
     save();render();return true;
-}function finish(){let p=plans[day],progress=getProgress();if(!p.items.some((_,index)=>completedSetCount(index)>0)&&!confirm('Nenhuma série foi marcada como concluída. Deseja salvar mesmo assim?'))return;db.logs.unshift({date:new Date().toLocaleString('pt-BR'),loggedAt:Date.now(),cycle:db.cycle,week:weekNo(),workout:'ABCDE'[day],done:progress.done,total:progress.t,items:p.items.map((e,i)=>{let v=db.entries[entryKey(i)]||{};return {name:selectedExercise(i),sets:v.sets??e[2],reps:v.reps??exerciseTarget(e,selectedExercise(i)),kg:v.kg??0,completed:completedSetCount(i)}}).filter((item,index)=>!p.items[index][7]||item.completed>0)});save();alert('Treino salvo no aparelho.');tab='historico';render()}
+}function finish(){let p=plans[day],progress=getProgress();if(!p.items.some((_,index)=>completedSetCount(index)>0)&&!confirm('Nenhuma série foi marcada como concluída. Deseja salvar mesmo assim?'))return;db.logs.unshift({date:new Date().toLocaleString('pt-BR'),loggedAt:Date.now(),cycle:db.cycle,week:weekNo(),workout:'ABCDE'[day],done:progress.done,total:progress.t,items:p.items.map((e,i)=>{let v=db.entries[entryKey(i)]||{};return {name:selectedExercise(i),sets:v.sets??e[2],reps:v.reps??exerciseTarget(e,selectedExercise(i)),kg:v.kg===''?null:(v.kg??null),completed:completedSetCount(i)}}).filter((item,index)=>!p.items[index][7]||item.completed>0)});save();alert('Treino salvo no aparelho.');tab='historico';render()}
 function addDiary(){db.diary.unshift({date:new Date().toLocaleString('pt-BR'),workout:'ABCDE'[+document.getElementById('dw').value],note:document.getElementById('note').value,region:document.getElementById('region').value,pain:document.getElementById('pain').value,fatigue:document.getElementById('fatigue').value,tingle:document.getElementById('tingle').checked});save();render()}function addCardio(){db.cardio.unshift({date:new Date().toLocaleString('pt-BR'),kind:document.getElementById('activity').value,time:fmt(seconds),km:document.getElementById('distance').value||0});save();pauseClock();seconds=0;render()}function newCycle(){if(cycleWeeksElapsed()<8&&!confirm('Ainda não se passaram 8 semanas. Deseja mesmo iniciar um novo ciclo mantendo todos os registros?'))return;if(!confirm('Iniciar novo ciclo? Os resultados anteriores serão preservados.'))return;db.cycle++;db.start=today();save();render()}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}migrateGymRecords();render();
 </script></body></html>
